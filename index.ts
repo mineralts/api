@@ -8,3 +8,8 @@
  *
  */
 
+import Client from './src/entities/client'
+
+export {
+  Client
+}
