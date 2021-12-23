@@ -8,6 +8,39 @@
  *
  */
 
+import { DateTime } from 'luxon'
+import Role from '../entities/roles'
+import Invite from '../entities/invitation/Invite'
+import GuildMember from '../entities/guild/GuildMember'
+import TextChannelResolvable from '../entities/guild/channels/TextChannelResolvable'
+import Presence from '../entities/presence'
+import Reaction from '../entities/reaction/Reaction'
+import Message from '../entities/message'
+import Guild from '../entities/guild/Guild'
+import Client from '../entities/client'
+import StringArgument from '../command/StringArgument'
+import NumberArgument from '../command/NumberArgument'
+import ChoiceArgument from '../command/ChoiceArgument'
+import TextChannel from '../entities/guild/channels/TextChannel'
+import VoiceChannel from '../entities/guild/channels/VoiceChannel'
+import CategoryChannel from '../entities/guild/channels/CategoryChannel'
+import StageChannel from '../entities/guild/channels/StageChannel'
+import RateLimit from '../entities/rateLimit'
+import ButtonInteraction from '../entities/interaction/ButtonInteraction'
+import SelectMenuInteraction from '../entities/interaction/SelectMenuInteraction'
+import CommandInteraction from '../entities/interaction/CommandInteraction'
+import Button from '../entities/button'
+import ButtonLink from '../entities/button/ButtonLink'
+import SelectMenu from '../entities/select-menu'
+import MessageEmbed from '../entities/embed/MessageEmbed'
+import EmbedRow from '../entities/embed/EmbedRow'
+import MessageAttachment from '../entities/message/MessageAttachment'
+
+export type Snowflake = string
+export type Milliseconds = number
+export type LocalPath = string
+export type Url = string
+
 export enum Intent {
   GUILDS = 1,
   GUILD_MEMBERS = 2,
@@ -41,4 +74,306 @@ export type ClientOptions = {
   restSweepInterval?: 60
   failIfNotExists?: true
   userAgentSuffix?: []
+}
+
+export enum ActivityType {
+  'PLAYING',
+  'STREAMING',
+  'LISTENING',
+  'WATCHING',
+  'CUSTOM',
+  'COMPETING'
+}
+
+export type ActivityTimestamps = { start: DateTime | undefined, end: DateTime | undefined }
+
+export type ActivityAssets = {
+  smallText: string | undefined,
+  smallImage: string | undefined,
+  largeText: string | undefined,
+  largeImage: string | undefined,
+}
+
+export enum ChannelTypeResolvable {
+  GUILD_TEXT = 0,
+  DM = 1,
+  GUILD_VOICE = 2,
+  GROUP_DM = 3,
+  GUILD_CATEGORY = 4,
+  GUILD_NEWS = 5,
+  GUILD_STORE = 6,
+  GUILD_NEWS_THREAD = 10,
+  GUILD_PUBLIC_THREAD = 11,
+  GUILD_PRIVATE_THREAD = 12,
+  GUILD_STAGE_VOICE = 13,
+}
+
+export type RequestOptions = {
+  retryOnRateLimit: boolean
+}
+
+export enum VIDEO_QUALITY {
+  AUTO = 1,
+  FULL = 2
+}
+
+export enum Region {
+  FRANCE = 'fr',
+  ENGLAND = 'en_US',
+  SPAIN = 'es-ES',
+  GERMANY = 'de',
+  DENMARK = 'da',
+  CROATIA = 'hr',
+  ITALY = 'it',
+  LITHUANIA = 'lt',
+  HUNGARY = 'hu',
+}
+
+export enum RTC_REGION {
+  US_WEST = 'us-west',
+  US_EAST = 'us-east',
+  US_CENTRAL = 'us-central',
+  US_SOUTH = 'us-south',
+  SINGAPORE = 'singapore',
+  SOUTH_AFRICA = 'southafrica',
+  SYDNEY = 'sydney',
+  ROTTERDAM = 'rotterdam',
+  BRAZIL = 'brazil',
+  HONG_KONG = 'hongkong',
+  RUSSIA = 'russia',
+  JAPAN = 'japan',
+  INDIA = 'india',
+  AUTO = 'null'
+}
+
+export enum VerificationLevel {
+  NONE,
+  LOW,
+  MEDIUM,
+  HIGH,
+  VERY_HIGH,
+}
+
+export enum ExplicitContentLevel {
+  DISABLED,
+  MEMBERS_WITHOUT_ROLES,
+  ALL_MEMBERS,
+}
+
+export enum NotificationLevel {
+  ALL_MESSAGES,
+  ONLY_MENTIONS
+}
+
+export type MessageComponentResolvable = Button | ButtonLink | SelectMenu
+
+export enum Feature {
+  ANIMATED_ICON,
+  BANNER,
+  COMMERCE,
+  COMMUNITY,
+  DISCOVERABLE,
+  FEATURABLE,
+  INVITE_SPLASH,
+  MEMBER_VERIFICATION_GATE_ENABLED,
+  MONETIZATION_ENABLED,
+  MORE_STICKERS,
+  NEWS,
+  PARTNERED,
+  PREVIEW_ENABLED,
+  PRIVATE_THREADS,
+  ROLE_ICONS,
+  SEVEN_DAY_THREAD_ARCHIVE,
+  THREE_DAY_THREAD_ARCHIVE,
+  TICKETED_EVENTS_ENABLED,
+  VANITY_URL,
+  VERIFIED,
+  VIP_REGIONS,
+  WELCOME_SCREEN_ENABLED,
+}
+
+export enum BehaviorsExpiration {
+  REMOVE_ROLE,
+  KICK
+}
+
+export enum SystemChannelFlag {
+  SUPPRESS_JOIN_NOTIFICATIONS	= 1 << 0,
+  SUPPRESS_PREMIUM_SUBSCRIPTIONS =	1 << 1,
+  SUPPRESS_GUILD_REMINDER_NOTIFICATIONS = 1 << 2,
+}
+
+export interface ClientEvents {
+  ready: [client: Client]
+  guildCreate: [guild: Guild]
+  messageCreate: [message: Message]
+  messageUpdate: [before: Message | undefined, after: Message]
+  messageDelete: [message: Message]
+  channelCreate: [channel: ChannelResolvable]
+  channelDelete: [channel: ChannelResolvable]
+  channelUpdate: [before: ChannelResolvable, after: ChannelResolvable]
+  rateLimit: [rateLimit: RateLimit]
+  messageReactionAdd: [message: Message, reaction: Reaction]
+  messageReactionRemove: [message: Message, reaction: Reaction]
+  presenceUpdate: [before: Presence | undefined, after: Presence]
+  voiceJoin: [member: GuildMember]
+  voiceLeave: [member: GuildMember]
+  memberBoostAdd: [member: GuildMember]
+  memberBoostRemove: [member: GuildMember]
+  interactionButtonCreate: [interaction: ButtonInteraction]
+  [key: `interactionButton::${string}`]: [interaction: ButtonInteraction]
+  interactionSelectMenuCreate: [interaction: SelectMenuInteraction]
+  [key: `interactionSelectMenu::${string}`]: [interaction: SelectMenuInteraction]
+  interactionCommandCreate: [interaction: CommandInteraction]
+  [key: `interactionCommand::${string}`]: [interaction: CommandInteraction]
+  rulesAccept: [member: GuildMember]
+  guildMemberJoin: [member: GuildMember, invitation?: Invite]
+  guildMemberLeave: [member: GuildMember]
+  inviteCreate: [invite: Invite]
+  inviteDelete: [invite: Invite]
+  roleCreate: [role: Role]
+  roleDelete: [role: Role]
+  roleUpdate: [before: Role, after: Role]
+  typingStart: [member: GuildMember, channel: TextChannelResolvable]
+}
+
+export enum ButtonStyle {
+  PRIMARY =	1,
+  SECONDARY = 2,
+  SUCCESS	= 3,
+  DANGER = 4,
+  LINK = 5,
+}
+
+export enum CommandArgumentType {
+  SUB_COMMAND = 1,
+  SUB_COMMAND_GROUP	= 2,
+  STRING	= 3,
+  INTEGER	= 4,
+  BOOLEAN	= 5,
+  USER	= 6,
+  CHANNEL =	7,
+  ROLE =	8,
+  MENTIONABLE	= 9,
+  NUMBER = 10,
+}
+
+export enum CommandType {
+  CHAT_INPUT = 1,
+  USER = 2,
+  MESSAGE = 3,
+}
+
+export type CommandParamsResolvable = StringArgument | NumberArgument | ChoiceArgument
+
+export type ChannelResolvable = TextChannel | VoiceChannel | CategoryChannel | StageChannel
+
+type ChannelNode<Type extends keyof ChannelOptions> = {
+  name: string
+  type: Type
+  permissionOverwrites?: any[]
+  position?: number
+  options?: Type extends keyof ChannelOptions
+    ? ChannelOptions[Type]
+    : never
+}
+
+type ChannelOptions = {
+  GUILD_TEXT: {
+    nsfw?: boolean
+    cooldown?: number
+    topic?: string
+    parentId?: Snowflake
+    parent?: CategoryChannel
+  },
+  GUILD_VOICE: {
+    userLimit?: number
+    bitrate?: number
+    parentId?: Snowflake
+    parent?: CategoryChannel
+  },
+  GUILD_CATEGORY: never,
+  GUILD_STAGE_VOICE: {
+    userLimit?: number
+    bitrate?: number
+    parentId?: Snowflake
+    parent?: CategoryChannel
+  },
+}
+
+export type ChannelOptionResolvable = ChannelNode<'GUILD_TEXT'>
+  | ChannelNode<'GUILD_VOICE'>
+  | ChannelNode<'GUILD_CATEGORY'>
+  | ChannelNode<'GUILD_STAGE_VOICE'>
+
+export enum InteractionType {
+  PING = 1,
+  APPLICATION_COMMAND = 2,
+  MESSAGE_COMPONENT = 3,
+}
+
+export enum InteractionType {
+  PONG = 1,
+  CHANNEL_MESSAGE_WITH_SOURCE =	4,
+  DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5,
+  DEFERRED_UPDATE_MESSAGE = 6,
+  UPDATE_MESSAGE =	7,
+  APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8,
+}
+
+export enum ComponentType {
+  ACTION_ROW = 1,
+  BUTTON = 2,
+  SELECT_MENU = 3,
+}
+
+export interface EmbedField {
+  name: string
+  value: string
+  inline?: boolean
+}
+
+export type Hash = {
+  omitted: boolean,
+  hash: string
+}
+
+export type GuildFeature =
+  | 'ANIMATED_ICON'
+  | 'BANNER'
+  | 'COMMERCE'
+  | 'COMMUNITY'
+  | 'DISCOVERABLE'
+  | 'FEATURABLE'
+  | 'INVITE_SPLASH'
+  | 'MEMBER_VERIFICATION_GATE_ENABLED'
+  | 'MONETIZATION_ENABLED'
+  | 'MORE_STICKERS'
+  | 'NEWS'
+  | 'PARTNERED'
+  | 'PREVIEW_ENABLED'
+  | 'PRIVATE_THREADS'
+  | 'ROLE_ICONS'
+  | 'SEVEN_DAY_THREAD_ARCHIVE'
+  | 'THREE_DAY_THREAD_ARCHIVE'
+  | 'TICKETED_EVENTS_ENABLED'
+  | 'VANITY_URL'
+  | 'VERIFIED'
+  | 'VIP_REGIONS'
+  | 'WELCOME_SCREEN_ENABLED'
+
+export enum PresenceStatus {
+  INACTIVE = 'idle',
+  DO_NOT_DISTURB = 'dnd',
+  ONLINE = 'online',
+  OFFLINE = 'offline',
+}
+
+export interface MessageOption {
+  content?: string
+  embeds?: MessageEmbed[]
+  tts?: boolean
+  components?: EmbedRow[]
+  attachment?: MessageAttachment
+  isClientSide?: boolean
 }
