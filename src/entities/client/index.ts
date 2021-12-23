@@ -1,14 +1,19 @@
-import { ClientOptions, Intent } from '../../types'
+import { Collection } from '@mineralts/core'
+import { ClientOptions, Snowflake } from '../../types'
+import User from '../user'
+import Presence from '../presence'
+import Command from '../../command/Command'
 
 export default class Client {
-  constructor (private container: any, public readonly token: string, private options: ClientOptions) {
-  }
-
-  private getIntentValue () {
-    return this.options.intents
-      ? this.options.intents === 'ALL'
-        ? Intent[this.options.intents]
-        : this.options.intents.reduce((acc: number, current: keyof typeof Intent) => acc + Intent[current], 0)
-      : 0
+  constructor (
+    private container: any,
+    public readonly token: string,
+    private options: ClientOptions,
+    public readonly user: User,
+    public readonly sessionId: string,
+    public readonly presences: Presence[],
+    public readonly application: { id: string, flags: number },
+    public commands: Collection<Snowflake, Command> = new Collection()
+  ) {
   }
 }
