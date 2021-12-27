@@ -1,10 +1,10 @@
-import { Snowflake } from '../../../types'
-import Guild from '../Guild'
+import { Snowflake } from '../../types'
+import Guild from '../guild/Guild'
 import TextChannelResolvable from './TextChannelResolvable'
 import { DateTime } from 'luxon'
 import CategoryChannel from './CategoryChannel'
-import Message from '../../message'
-import MessageManager from '../../message/MessageManager'
+import Message from '../message'
+import MessageManager from '../message/MessageManager'
 
 export default class TextChannel extends TextChannelResolvable {
   constructor (
@@ -19,12 +19,11 @@ export default class TextChannel extends TextChannelResolvable {
     permissionOverwrites: { [K: string]: string }[],
     position: number,
     cooldown: DateTime,
-    topic: string,
     messages: MessageManager,
     isNsfw: boolean,
     parent?: CategoryChannel,
   ) {
-    super(id, 'GUILD_TEXT', name, description, guildId, guild, lastMessageId, lastMessage, parentId, permissionOverwrites, position, cooldown, topic, messages, isNsfw, parent)
+    super(id, 'GUILD_TEXT', name, description, guildId, guild, lastMessageId, lastMessage, parentId, permissionOverwrites, position, cooldown, messages, isNsfw, parent)
     this.messages = new MessageManager(this)
   }
 }
