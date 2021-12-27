@@ -31,6 +31,16 @@ import MessageManager from './src/entities/message/MessageManager'
 import Collection from './src/utils/Collection'
 import GuildManager from './src/entities/GuildManager'
 import Invite from './src/entities/invitation/Invite'
+import Message from './src/entities/message'
+import MentionResolvable from './src/entities/mention/MentionResolvable'
+import MessageAttachment from './src/entities/message/MessageAttachment'
+import Button from './src/entities/button'
+import EmbedRow from './src/entities/embed/EmbedRow'
+import SelectMenu from './src/entities/select-menu'
+import EmbedAuthor from './src/entities/embed/EmbedAuthor'
+import EmbedThumbnail from './src/entities/embed/EmbedThumbnail'
+import EmbedImage from './src/entities/embed/EmbedImage'
+import EmbedFooter from './src/entities/embed/EmbedFooter'
 import {
   ActivityType,
   ChannelResolvable,
@@ -41,6 +51,8 @@ import {
   Snowflake,
   RTC_Region,
   VideoQuality,
+  ComponentType,
+  ButtonStyle,
 } from './src/types'
 
 export {
@@ -75,5 +87,17 @@ export {
   VideoQuality,
   Collection,
   GuildManager,
-  Invite
+  Invite,
+  Message,
+  MentionResolvable,
+  MessageAttachment,
+  ComponentType,
+  EmbedRow,
+  Button,
+  ButtonStyle,
+  SelectMenu,
+  EmbedThumbnail,
+  EmbedAuthor,
+  EmbedImage,
+  EmbedFooter
 }
