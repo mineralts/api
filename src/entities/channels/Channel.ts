@@ -1,6 +1,7 @@
-import { ChannelTypeResolvable, RequestOptions, Snowflake } from '../../types'
+import { ChannelTypeResolvable, Snowflake } from '../../types'
 import Guild from '../guild/Guild'
 import CategoryChannel from './CategoryChannel'
+import Application from '@mineralts/application'
 
 export default class Channel {
   constructor (
@@ -36,35 +37,42 @@ export default class Channel {
     return ChannelTypeResolvable[this.type] === ChannelTypeResolvable.GUILD_STAGE_VOICE
   }
 
-  public async setParent (category: CategoryChannel | Snowflake, option?: RequestOptions) {
-    const request = new Request(`/channels/${this.id}`)
+  public async setParent (category: CategoryChannel | Snowflake) {
+    const request = Application.createRequest()
     const parentId = typeof category === 'string'
       ? category
       : category.id
-    // await request.patch({ parent_id: parentId }, option)
+
+    await request.patch(`/channels/${this.id}`,{
+      parent_id: parentId
+    })
 
     this.parentId = parentId
     this.parent = this.guild?.channels.cache.get(parentId)
   }
 
-  public async setName (value: string, option?: RequestOptions) {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ name: value }, option)
+  public async setName (value: string) {
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, {
+      name: value
+    })
+
     this.name = value
   }
 
   public async setPosition (position: number) {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ position })
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, { position })
+
     this.position = position
   }
 
-  public async delete (option?: RequestOptions) {
+  public async delete () {
     if (this.id === this.guild?.publicUpdateChannelId || this.id === this.guild?.ruleChannelId) {
       return
     }
 
-    const request = new Request(`/channels/${this.id}`)
-    // await request.delete(option)
+    const request = Application.createRequest()
+    await request.delete(`/channels/${this.id}`)
   }
 }
