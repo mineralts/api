@@ -1,6 +1,6 @@
-import { RTC_REGION, Snowflake, VIDEO_QUALITY } from '../../../types'
+import { RTC_Region, Snowflake, VideoQuality } from '../../types'
 import Channel from './Channel'
-import Guild from '../Guild'
+import Guild from '../guild/Guild'
 import CategoryChannel from './CategoryChannel'
 
 export default class VoiceChannel extends Channel {
@@ -10,13 +10,13 @@ export default class VoiceChannel extends Channel {
     guildId: Snowflake,
     guild: Guild | undefined,
     public maxUser: number,
-    public region: keyof typeof RTC_REGION,
+    public region: keyof typeof RTC_Region,
     public rateLimitPerUser: number,
     position: number,
     public permission: any[],
     parentId: Snowflake,
     public bitrate: number,
-    public videoQuality: keyof typeof VIDEO_QUALITY,
+    public videoQuality: keyof typeof VideoQuality,
     parent?: CategoryChannel,
   ) {
     super(id, 'GUILD_VOICE', name, guildId, guild, parentId, position, parent)
@@ -32,9 +32,9 @@ export default class VoiceChannel extends Channel {
     }
   }
 
-  public async setRtcRegion (region: keyof typeof RTC_REGION) {
+  public async setRtcRegion (region: keyof typeof RTC_Region) {
     const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ rtc_region: region !== 'AUTO' ? RTC_REGION[region] : null })
+    // await request.patch({ rtc_region: region !== 'AUTO' ? RTC_Region[region] : null })
     this.region = region
   }
 
@@ -44,9 +44,9 @@ export default class VoiceChannel extends Channel {
     this.maxUser = value === 'UNLIMITED' ? 0 : value
   }
 
-  public async setVideoQuality (quality: keyof typeof VIDEO_QUALITY) {
+  public async setVideoQuality (quality: keyof typeof VideoQuality) {
     const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ video_quality_mode: VIDEO_QUALITY[quality] })
+    // await request.patch({ video_quality_mode: VideoQuality[quality] })
     this.videoQuality = quality
   }
 }
