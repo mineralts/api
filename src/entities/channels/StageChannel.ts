@@ -1,6 +1,6 @@
-import { RTC_REGION, Snowflake } from '../../../types'
+import { RTC_Region, Snowflake } from '../../types'
 import Channel from './Channel'
-import Guild from '../Guild'
+import Guild from '../guild/Guild'
 import CategoryChannel from './CategoryChannel'
 
 export default class StageChannel extends Channel {
@@ -11,7 +11,7 @@ export default class StageChannel extends Channel {
     guildId: Snowflake,
     guild: Guild | undefined,
     public maxUser: number,
-    public region: keyof typeof RTC_REGION,
+    public region: keyof typeof RTC_Region,
     public rateLimitPerUser: number,
     position: number,
     public permission: any[],
