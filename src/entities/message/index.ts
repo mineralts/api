@@ -7,9 +7,9 @@ import Emoji from '../emoji'
 import MessageAttachment from './MessageAttachment'
 import ReactionManager from '../reaction/ReactionManager'
 import MessageEmbed from '../embed/MessageEmbed'
-import { MentionResolvable } from '../mention/MentionResolvable'
 import Application from '@mineralts/application'
 import { parseEmoji } from '../../utils'
+import MentionResolvable from '../mention/MentionResolvable'
 
 export default class Message {
   public reactions: ReactionManager = new ReactionManager(this)
