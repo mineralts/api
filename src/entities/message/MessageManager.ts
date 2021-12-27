@@ -1,7 +1,7 @@
 import { Collection } from '@mineralts/core'
 import { RequestOptions, Snowflake } from '../../types'
 import Message from './index'
-import TextChannel from '../guild/channels/TextChannel'
+import TextChannel from '../channels/TextChannel'
 
 export default class MessageManager {
   public cache: Collection<Snowflake, Message> = new Collection()
