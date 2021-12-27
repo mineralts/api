@@ -1,5 +1,5 @@
-import { ChannelTypeResolvable, RequestOptions, Snowflake } from '../../../types'
-import Guild from '../Guild'
+import { ChannelTypeResolvable, RequestOptions, Snowflake } from '../../types'
+import Guild from '../guild/Guild'
 import CategoryChannel from './CategoryChannel'
 
 export default class Channel {
