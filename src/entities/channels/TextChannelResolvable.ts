@@ -2,7 +2,6 @@ import {
   ChannelTypeResolvable,
   MessageComponentResolvable, MessageOption,
   Milliseconds,
-  RequestOptions,
   Snowflake
 } from '../../types'
 import Guild from '../guild/Guild'
@@ -12,6 +11,8 @@ import CategoryChannel from './CategoryChannel'
 import Message from '../message'
 import MessageManager from '../message/MessageManager'
 import EmbedRow from '../embed/EmbedRow'
+import Application from '@mineralts/application'
+import { MessageBuilder } from '@mineralts/core'
 
 export default class TextChannelResolvable extends Channel {
   constructor (
@@ -34,30 +35,35 @@ export default class TextChannelResolvable extends Channel {
     super(id, type, name, guildId, guild, parentId, position, parent)
   }
 
-  public async setCooldown (value: Milliseconds, option?: RequestOptions) {
+  public async setCooldown (value: Milliseconds) {
     if (value < 0 || value > 21600) {
-      // Logger.send('error', `${value} cannot be value < 0 or value > 21600`)
+      const logger = Application.getLogger()
+      logger.error(`${value} cannot be value < 0 or value > 21600`)
     }
 
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ rate_limit_per_user: value }, option)
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, { rate_limit_per_user: value })
+
     this.cooldown = DateTime.fromMillis(value)
   }
 
-  public async setDescription (value: string, option?: RequestOptions) {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ topic: value }, option)
-    this.description = value
+  public async setDescription (value: string | null) {
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, { topic: value })
+
+    this.description = value || ''
   }
 
   public async setNSFW(bool: boolean) {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ nsfw: bool })
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, { nsfw: bool })
+
     this.isNsfw = bool
   }
 
-  public async send (messageOption: MessageOption, option?: RequestOptions) {
-    const request = new Request(`/channels/${this.id}/messages`)
+  public async send (messageOption: MessageOption) {
+    const request = Application.createRequest()
+
     const components = messageOption.components?.map((row: EmbedRow) => {
       row.components = row.components.map((component: MessageComponentResolvable) => {
         return component.toJson() as unknown as MessageComponentResolvable
@@ -69,14 +75,15 @@ export default class TextChannelResolvable extends Channel {
       // new InvalidBody()
     }
 
-    // const payload = await request.post({
-    //   ...messageOption,
-    //   components
-    // }, option)
-    //
-    // return createMessageFromPayload({
-    //   ...payload,
-    //   guild_id: this.guild!.id,
-    // })
+    const payload = await request.post(`/channels/${this.id}/messages`, {
+      ...messageOption,
+      components
+    })
+
+    const messageBuilder = new MessageBuilder(Application.getClient())
+    return messageBuilder.build({
+      ...payload,
+      guild_id: this.guild!.id,
+    })
   }
 }
