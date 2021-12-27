@@ -1,9 +1,9 @@
-import { Snowflake } from '../../../types'
-import Guild from '../Guild'
+import { Snowflake } from '../../types'
+import Guild from '../guild/Guild'
 import TextChannelResolvable from './TextChannelResolvable'
 import CategoryChannel from './CategoryChannel'
-import Message from '../../message'
-import MessageManager from '../../message/MessageManager'
+import Message from '../message'
+import MessageManager from '../message/MessageManager'
 import { DateTime } from 'luxon'
 
 export default class NewsChannel extends TextChannelResolvable {
@@ -23,6 +23,6 @@ export default class NewsChannel extends TextChannelResolvable {
     messages: MessageManager,
     parent?: CategoryChannel
   ) {
-    super(id, 'GUILD_NEWS', name, description, guildId, guild, lastMessageId, lastMessage, parentId, permissionOverwrites, position, rateLimitePerUser, topic, messages, false, parent)
+    super(id, 'GUILD_NEWS', name, description, guildId, guild, lastMessageId, lastMessage, parentId, permissionOverwrites, position, rateLimitePerUser, messages, false, parent)
   }
 }
