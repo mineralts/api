@@ -1,4 +1,4 @@
-import { CommandParamsResolvable, CommandType, Snowflake } from '../types'
+import { ChannelTypeResolvable, CommandArgumentType, CommandParamsResolvable, CommandType, Snowflake } from '../types'
 import Guild from '../entities/guild/Guild'
 import SubCommandArgument from './SubCommandArgument'
 import StringArgument from './StringArgument'
@@ -79,41 +79,41 @@ export default class Command {
   }
 
   public toJson () {
-    // return {
-    //   type: CommandType[this.type!],
-    //   name: this.name,
-    //   description: this.description,
-    //   options: this.arguments.map((argument: CommandParamsResolvable | SubCommandArgument) => {
-    //     if (argument instanceof SubCommandArgument) {
-    //       return {
-    //         name: argument.name,
-    //         description: argument.description,
-    //         type: CommandArgumentType[argument.type],
-    //         options: argument.arguments.map((argument: CommandParamsResolvable) => {
-    //           return {
-    //             ...argument,
-    //             name: argument.name,
-    //             description: argument.description,
-    //             type: CommandArgumentType[argument.type!],
-    //             required: argument.isRequired,
-    //             channel_types: argument instanceof ChannelArgument
-    //               ? argument.channelTypes.map((channelType: keyof typeof ChannelTypeResolvable) => ChannelTypeResolvable[channelType])
-    //               : undefined
-    //           }
-    //         })
-    //       }
-    //     }
-    //     return {
-    //       ...argument,
-    //       name: argument.name,
-    //       description: argument.description,
-    //       type: CommandArgumentType[argument.type!],
-    //       required: argument.isRequired,
-    //       channel_types: argument instanceof ChannelArgument
-    //         ? argument.channelTypes.map((channelType: keyof typeof ChannelTypeResolvable) => ChannelTypeResolvable[channelType])
-    //         : undefined
-    //     }
-    //   })
-    // }
+    return {
+      type: CommandType[this.type!],
+      name: this.name,
+      description: this.description,
+      options: this.arguments.map((argument: CommandParamsResolvable | SubCommandArgument) => {
+        // if (argument instanceof SubCommandArgument) {
+        //   return {
+        //     name: argument.name,
+        //     description: argument.description,
+        //     type: CommandArgumentType[argument.type],
+        //     options: argument.arguments.map((argument: CommandParamsResolvable) => {
+        //       return {
+        //         ...argument,
+        //         name: argument.name,
+        //         description: argument.description,
+        //         type: CommandArgumentType[argument.type!],
+        //         required: argument.isRequired,
+        //         channel_types: argument instanceof ChannelArgument
+        //           ? argument.channelTypes.map((channelType: keyof typeof ChannelTypeResolvable) => ChannelTypeResolvable[channelType])
+        //           : undefined
+        //       }
+        //     })
+        //   }
+        // }
+        return {
+          ...argument,
+          name: argument.name,
+          description: argument.description,
+          type: CommandArgumentType[argument.type!],
+          required: argument.isRequired,
+          channel_types: argument instanceof ChannelArgument
+            ? argument.channelTypes.map((channelType: keyof typeof ChannelTypeResolvable) => ChannelTypeResolvable[channelType])
+            : undefined
+        }
+      })
+    }
   }
 }

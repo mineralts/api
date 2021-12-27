@@ -3,7 +3,6 @@ import {
   ExplicitContentLevel, Feature, GuildFeature, LocalPath, Milliseconds,
   NotificationLevel,
   Region,
-  RequestOptions,
   Snowflake, SystemChannelFlag,
   VerificationLevel
 } from '../../types'
@@ -76,7 +75,7 @@ export default class Guild {
   ) {
   }
 
-  public async setName (value: string, options?: RequestOptions): Promise<void> {
+  public async setName (value: string): Promise<void> {
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, { name: value })
 
@@ -85,119 +84,126 @@ export default class Guild {
     }
   }
 
-  public async setPreferredLocale (region: keyof typeof Region, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // await request.patch({ preferred_locale: region }, options)
-    // this.region = region
+  public async setPreferredLocale (region: keyof typeof Region): Promise<void> {
+    const request = Application.createRequest()
+    await request.patch(`/guilds/${this.id}`, {
+      preferred_locale: region
+    })
+
+    this.region = region
   }
 
-  public async leave (options?: RequestOptions): Promise<void> {
+  public async leave (): Promise<void> {
     const client = Application.getClient()
     if (this.ownerId === client.user.id) {
       throw new Error('GUILD_OWNER')
     }
 
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.delete(options)
-    // if (result) {
-    //   client.cacheManager.guilds.cache.delete(this.id)
-    // }
+    const request = Application.createRequest()
+    const result = await request.delete(`/guilds/${this.id}`)
+    if (result) {
+      client.guilds.cache.delete(this.id)
+    }
   }
 
-  public async setAfkChannel (voiceChannel: VoiceChannel | Snowflake, options?: RequestOptions): Promise<void> {
+  public async setAfkChannel (voiceChannel: VoiceChannel | Snowflake): Promise<void> {
     const value = voiceChannel instanceof VoiceChannel
       ? voiceChannel.id
       : voiceChannel
-    const request = new Request(`/guilds/${this.id}`)
 
-    // const result = await request.patch({
-    //   afk_channel_id: value
-    // }, options)
-    //
-    // if (result) {
-    //   this.afkChannelId = value
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      afk_channel_id: value
+    })
+
+    if (result) {
+      this.afkChannelId = value
+    }
   }
 
-  public async setVerificationLevel (level: keyof typeof VerificationLevel, options?: RequestOptions): Promise<void> {
+  public async setVerificationLevel (level: keyof typeof VerificationLevel): Promise<void> {
     const value = VerificationLevel[level]
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ verification_level: value }, options)
-    //
-    // if (result) {
-    //   this.verificationLevel = value
-    // }
+
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      verification_level: value
+    })
+
+    if (result) {
+      this.verificationLevel = value
+    }
   }
 
-  public async setNotificationLevel (level: keyof typeof NotificationLevel, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ default_message_notifications: NotificationLevel[level] }, options)
-    //
-    // if (result) {
-    //   this.defaultMessageNotifications = level
-    // }
+  public async setNotificationLevel (level: keyof typeof NotificationLevel): Promise<void> {
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      default_message_notifications: NotificationLevel[level]
+    })
+
+    if (result) {
+      this.defaultMessageNotifications = level
+    }
   }
 
-  public async setExplicitContentFilter (level: keyof typeof ExplicitContentLevel, options?: RequestOptions): Promise<void> {
+  public async setExplicitContentFilter (level: keyof typeof ExplicitContentLevel): Promise<void> {
     const explicitContentFilter = ExplicitContentLevel[level]
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ explicit_content_filter: explicitContentFilter }, options)
-    //
-    // if (result) {
-    //   this.explicitContentFilter = explicitContentFilter
-    // }
+
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      explicit_content_filter: explicitContentFilter
+    })
+
+    if (result) {
+      this.explicitContentFilter = explicitContentFilter
+    }
   }
 
-  public async setAfkTimeout (value: Milliseconds, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ afk_timeout: value }, options)
-    //
-    // if (result) {
-    //   this.afkTimeout = value
-    // }
+  public async setAfkTimeout (value: Milliseconds): Promise<void> {
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      afk_timeout: value
+    })
+
+    if (result) {
+      this.afkTimeout = value
+    }
   }
 
   private hasFeature(feature: keyof typeof Feature): boolean {
     return this.features.includes(feature)
   }
 
-  public async setIcon (path: LocalPath, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // if (path.startsWith('http') || path.startsWith('https')) {
-    //   if (!this.hasFeature('ANIMATED_ICON') && path.split('.')[1] === 'gif') {
-    //     Logger.send('error', 'You do not have permission to upload a invitation banner')
-    //     return
-    //   }
-    //
-    //   const { data } = await axios(path)
-    //   file = Buffer.from(data, 'base64').toString('base64')
-    // } else {
-    // }
-
+  public async setIcon (path: LocalPath): Promise<void> {
     if (!this.hasFeature('ANIMATED_ICON') && path.split('.')[1] === 'gif') {
-      // Logger.send('error', 'You do not have permission to upload a invitation banner')
+      const logger = Application.getLogger()
+      logger.error('You do not have permission to upload a invitation banner')
     }
 
     const filePath = join(process.cwd(), path)
     const file = await fs.promises.readFile(filePath, 'base64')
 
-    // const { data } = await request.patch({ icon: `data:image/png;base64,${file}` }, options)
-    //
-    // if (data) {
-    //   this.icon = data.icon
-    // }
+    const request = Application.createRequest()
+    const data = await request.patch(`/guilds/${this.id}`, {
+      icon: `data:image/png;base64,${file}` }
+    )
+
+    if (data) {
+      this.icon = data.icon
+    }
   }
 
-  public async removeIcon (options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // const { data } =  await request.patch({ icon: null }, options)
-    //
-    // if (data) {
-    //   this.icon = data.icon
-    // }
+  public async removeIcon (): Promise<void> {
+    const request = Application.createRequest()
+    const { data } =  await request.patch(`/guilds/${this.id}`, {
+      icon: null
+    })
+
+    if (data) {
+      this.icon = data.icon
+    }
   }
 
-  public async setOwner (member: GuildMember | Snowflake, options?: RequestOptions): Promise<void> {
+  public async setOwner (member: GuildMember | Snowflake): Promise<void> {
     const client = Application.getClient()
     const value = member instanceof GuildMember
       ? member.id
@@ -207,133 +213,155 @@ export default class Guild {
       throw new Error('OWNER_IS_ALREADY_MEMBER')
     }
 
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ owner_id: value }, options)
-    //
-    // if (result) {
-    //   this.ownerId = value
-    //   this.owner = this.members.cache.get(value)!
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      owner_id: value
+    })
+
+    if (result) {
+      this.ownerId = value
+      this.owner = this.members.cache.get(value)!
+    }
   }
 
-  public async setSplash (path: string, options?: RequestOptions): Promise<void> {
+  public async setSplash (path: string): Promise<void> {
     if (!this.features.includes('INVITE_SPLASH')) {
-      // Logger.send('error', 'You do not have permission to upload a invitation banner')
+      const logger = Application.getLogger()
+      logger.warn('You do not have permission to upload a invitation banner')
     }
 
-    const request = new Request(`/guilds/${this.id}`)
     const filePath = join(process.cwd(), path)
     const file = await fs.promises.readFile(filePath, 'base64')
 
-    // const result = await request.patch({ splash: `data:image/png;base64,${file}` }, options)
-    //
-    // if (result) {
-    //   this.splash = result.splash
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      splash: `data:image/png;base64,${file}`
+    })
+
+    if (result) {
+      this.splash = result.splash
+    }
   }
 
-  public async setDiscoverySplash (path: string, options?: RequestOptions): Promise<void> {
+  public async setDiscoverySplash (path: string): Promise<void> {
     if (!this.features.includes('DISCOVERABLE')) {
-      // Logger.send('error', 'You do not have permission to upload a discovery banner')
+      const logger = Application.getLogger()
+      logger.warn('You do not have permission to upload a discovery banner')
     }
 
-    const request = new Request(`/guilds/${this.id}`)
     const filePath = join(process.cwd(), path)
     const file = await fs.promises.readFile(filePath, 'base64')
 
-    // const result = await request.patch({ discovery_splash: `data:image/png;base64,${file}` }, options)
-    //
-    // if (result) {
-    //   this.splash = result.splash
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      discovery_splash: `data:image/png;base64,${file}`
+    })
+
+    if (result) {
+      this.splash = result.splash
+    }
   }
 
-  public async setBanner (path: string, options?: RequestOptions): Promise<void> {
+  public async setBanner (path: string): Promise<void> {
     if (!this.features.includes('DISCOVERABLE')) {
-      // Logger.send('error', 'You do not have permission to upload a banner')
+      const logger = Application.getLogger()
+      logger.warn('You do not have permission to upload a banner')
     }
 
-    const request = new Request(`/guilds/${this.id}`)
     const filePath = join(process.cwd(), path)
     const file = await fs.promises.readFile(filePath, 'base64')
 
-    // const result = await request.patch({ banner: `data:image/png;base64,${file}` }, options)
-    //
-    // if (result) {
-    //   this.banner = result
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      banner: `data:image/png;base64,${file}`
+    })
+
+    if (result) {
+      this.banner = result
+    }
   }
 
-  public async setSystemChannel (channel: TextChannel | Snowflake, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
+  public async setSystemChannel (channel: TextChannel | Snowflake): Promise<void> {
     const value = channel instanceof TextChannel
       ? channel.id
       :channel
 
-    // const result = await request.patch({ system_channel_id: value }, options)
-    //
-    // if (result) {
-    //   this.systemChannelId = result
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      system_channel_id: value
+    })
+
+    if (result) {
+      this.systemChannelId = result
+    }
   }
 
   public async setSystemChannelFlag (flag: keyof typeof SystemChannelFlag): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
     const value = SystemChannelFlag[flag]
-    // const result = await request.patch({ system_channel_flags: value })
-    //
-    // if (result) {
-    //   this.systemChannelFlags = value
-    // }
+
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      system_channel_flags: value
+    })
+
+    if (result) {
+      this.systemChannelFlags = value
+    }
   }
 
-  public async setRuleChannel (channel: TextChannel | Snowflake, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
+  public async setRuleChannel (channel: TextChannel | Snowflake): Promise<void> {
     const value = channel instanceof TextChannel
       ? channel.id
       : channel
 
-    // const result = await request.patch({ rules_channel_id: value }, options)
-    //
-    // if (result) {
-    //   this.ruleChannelId = value
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      rules_channel_id: value
+    })
+
+    if (result) {
+      this.ruleChannelId = value
+    }
   }
 
-  public async setPublicUpdateChannel (channel: TextChannel | Snowflake, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
+  public async setPublicUpdateChannel (channel: TextChannel | Snowflake): Promise<void> {
     const value = channel instanceof TextChannel
       ? channel.id
       : channel
 
-    // const result = await request.patch({ public_updates_channel_id: value }, options)
-    //
-    // if (result) {
-    //   this.publicUpdateChannelId = value
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      public_updates_channel_id: value
+    })
+
+    if (result) {
+      this.publicUpdateChannelId = value
+    }
   }
 
-  public async setDescription (value: string, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ description: value }, options)
-    //
-    // if (result) {
-    //   this.description = value
-    // }
+  public async setDescription (value: string): Promise<void> {
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, {
+      description: value
+    })
+
+    if (result) {
+      this.description = value
+    }
   }
 
   public async registerCommands (...commands: Command[]) {
     const client = Application.getClient()
-    const request = new Request(`/applications/${client.application.id}/guilds/${this.id}/commands`)
+    const request = Application.createRequest()
 
     return Promise.all(
       commands.map(async (command: Command) => {
-        // const payload = await request.post(command.toJson())
-        //
-        // command.id = payload.id
-        // command.guild = this
-        //
-        // this.commands.set(command.id!, command)
+        const payload = await request.post(`/applications/${client.application.id}/guilds/${this.id}/commands`, command.toJson())
+
+        command.id = payload.id
+        command.guild = this
+
+        this.commands.set(command.id!, command)
       })
     )
   }
