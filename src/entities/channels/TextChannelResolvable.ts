@@ -4,14 +4,14 @@ import {
   Milliseconds,
   RequestOptions,
   Snowflake
-} from '../../../types'
-import Guild from '../Guild'
+} from '../../types'
+import Guild from '../guild/Guild'
 import Channel from './Channel'
 import { DateTime } from 'luxon'
 import CategoryChannel from './CategoryChannel'
-import Message from '../../message'
-import MessageManager from '../../message/MessageManager'
-import EmbedRow from '../../embed/EmbedRow'
+import Message from '../message'
+import MessageManager from '../message/MessageManager'
+import EmbedRow from '../embed/EmbedRow'
 
 export default class TextChannelResolvable extends Channel {
   constructor (
@@ -27,7 +27,6 @@ export default class TextChannelResolvable extends Channel {
     public permissionOverwrites: { [K: string]: string }[],
     position: number,
     public cooldown: DateTime,
-    topic: string,
     public messages: MessageManager,
     public isNsfw: boolean,
     parent?: CategoryChannel,
