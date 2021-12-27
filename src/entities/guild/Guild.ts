@@ -8,10 +8,10 @@ import {
   VerificationLevel
 } from '../../types'
 import GuildMember from './GuildMember'
-import VoiceChannel from './channels/VoiceChannel'
+import VoiceChannel from '../channels/VoiceChannel'
 import { join } from 'path'
 import fs from 'fs'
-import TextChannel from './channels/TextChannel'
+import TextChannel from '../channels/TextChannel'
 import Application from '@mineralts/application'
 import Command from '../../command/Command'
 import GuildRoleManager from './GuildRoleManager'
@@ -53,6 +53,7 @@ export default class Guild {
     public features: GuildFeature[],
     public stickers: GuildStickerManager,
     public members: GuildMemberManager,
+    public bots: GuildMemberManager,
     public ruleChannelId: Snowflake,
     public guildScheduledEvents: any[],
     public defaultMessageNotifications: keyof typeof NotificationLevel,
@@ -76,12 +77,12 @@ export default class Guild {
   }
 
   public async setName (value: string, options?: RequestOptions): Promise<void> {
-    const request = new Request(`/guilds/${this.id}`)
-    // const result = await request.patch({ name: value }, options)
-    //
-    // if (result) {
-    //   this.name = value
-    // }
+    const request = Application.createRequest()
+    const result = await request.patch(`/guilds/${this.id}`, { name: value })
+
+    if (result) {
+      this.name = value
+    }
   }
 
   public async setPreferredLocale (region: keyof typeof Region, options?: RequestOptions): Promise<void> {
