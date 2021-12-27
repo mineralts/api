@@ -1,7 +1,7 @@
 import { Snowflake } from '../../types'
 import User from '../user'
 import Guild from '../guild/Guild'
-import Channel from '../guild/channels/Channel'
+import Channel from '../channels/Channel'
 
 export default class VoiceState {
   constructor (
