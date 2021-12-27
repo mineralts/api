@@ -4,7 +4,7 @@ import { Collection } from '@mineralts/core'
 import GuildMember from '../guild/GuildMember'
 import Channel from '../channels/Channel'
 
-export class MentionResolvable {
+export default class MentionResolvable {
   constructor (
     public isEveryone: boolean,
     public roles: Collection<Snowflake, Role>,
