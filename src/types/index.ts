@@ -12,7 +12,7 @@ import { DateTime } from 'luxon'
 import Role from '../entities/roles'
 import Invite from '../entities/invitation/Invite'
 import GuildMember from '../entities/guild/GuildMember'
-import TextChannelResolvable from '../entities/guild/channels/TextChannelResolvable'
+import TextChannelResolvable from '../entities/channels/TextChannelResolvable'
 import Presence from '../entities/presence'
 import Reaction from '../entities/reaction/Reaction'
 import Message from '../entities/message'
@@ -21,10 +21,10 @@ import Client from '../entities/client'
 import StringArgument from '../command/StringArgument'
 import NumberArgument from '../command/NumberArgument'
 import ChoiceArgument from '../command/ChoiceArgument'
-import TextChannel from '../entities/guild/channels/TextChannel'
-import VoiceChannel from '../entities/guild/channels/VoiceChannel'
-import CategoryChannel from '../entities/guild/channels/CategoryChannel'
-import StageChannel from '../entities/guild/channels/StageChannel'
+import TextChannel from '../entities/channels/TextChannel'
+import VoiceChannel from '../entities/channels/VoiceChannel'
+import CategoryChannel from '../entities/channels/CategoryChannel'
+import StageChannel from '../entities/channels/StageChannel'
 import RateLimit from '../entities/rateLimit'
 import ButtonInteraction from '../entities/interaction/ButtonInteraction'
 import SelectMenuInteraction from '../entities/interaction/SelectMenuInteraction'
@@ -112,7 +112,7 @@ export type RequestOptions = {
   retryOnRateLimit: boolean
 }
 
-export enum VIDEO_QUALITY {
+export enum VideoQuality {
   AUTO = 1,
   FULL = 2
 }
@@ -129,7 +129,7 @@ export enum Region {
   HUNGARY = 'hu',
 }
 
-export enum RTC_REGION {
+export enum RTC_Region {
   US_WEST = 'us-west',
   US_EAST = 'us-east',
   US_CENTRAL = 'us-central',
