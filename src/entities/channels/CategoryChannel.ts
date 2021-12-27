@@ -1,6 +1,6 @@
-import { Snowflake } from '../../../types'
+import { Snowflake } from '../../types'
 import Channel from './Channel'
-import Guild from '../Guild'
+import Guild from '../guild/Guild'
 
 export default class CategoryChannel extends Channel {
   constructor (
