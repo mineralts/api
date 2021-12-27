@@ -2,6 +2,7 @@ import { RTC_Region, Snowflake, VideoQuality } from '../../types'
 import Channel from './Channel'
 import Guild from '../guild/Guild'
 import CategoryChannel from './CategoryChannel'
+import Application from '@mineralts/application'
 
 export default class VoiceChannel extends Channel {
   constructor (
@@ -23,30 +24,42 @@ export default class VoiceChannel extends Channel {
   }
 
   public async setBitrate (value: number) {
-    const request = new Request(`/channels/${this.id}`)
+    const request = Application.createRequest()
     if (value >= 8000 && value <= 96000) {
-      // await request.patch({ bitrate: value })
+      await request.patch(`/channels/${this.id}`, { bitrate: value })
       this.bitrate = value
     } else {
-      // Logger.send('error', 'Please define your bitrate between 8000 and 96000')
+      const logger = Application.getLogger()
+      logger.error('Please define your bitrate between 8000 and 96000')
     }
   }
 
   public async setRtcRegion (region: keyof typeof RTC_Region) {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ rtc_region: region !== 'AUTO' ? RTC_Region[region] : null })
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, {
+      rtc_region: region !== 'AUTO'
+        ? RTC_Region[region]
+        : null
+    })
+
     this.region = region
   }
 
   public async setMaxUser (value: number | 'UNLIMITED') {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ user_limit: value === 'UNLIMITED' ? 0 : value })
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, {
+      user_limit: value === 'UNLIMITED' ? 0 : value
+    })
+
     this.maxUser = value === 'UNLIMITED' ? 0 : value
   }
 
   public async setVideoQuality (quality: keyof typeof VideoQuality) {
-    const request = new Request(`/channels/${this.id}`)
-    // await request.patch({ video_quality_mode: VideoQuality[quality] })
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.id}`, {
+      video_quality_mode: VideoQuality[quality]
+    })
+
     this.videoQuality = quality
   }
 }
