@@ -27,8 +27,10 @@ import Activity from './src/entities/activity'
 import TextChannel from './src/entities/channels/TextChannel'
 import VoiceChannel from './src/entities/channels/VoiceChannel'
 import CategoryChannel from './src/entities/channels/CategoryChannel'
+import TextChannelResolvable from './src/entities/channels/TextChannelResolvable'
 import MessageManager from './src/entities/message/MessageManager'
 import Collection from './src/utils/Collection'
+import Channel from './src/entities/channels/Channel'
 import GuildManager from './src/entities/GuildManager'
 import Invite from './src/entities/invitation/Invite'
 import Message from './src/entities/message'
@@ -66,10 +68,12 @@ export {
   Presence,
   Role,
   Emoji,
+  Channel,
   ChannelResolvable,
   TextChannel,
   VoiceChannel,
   CategoryChannel,
+  TextChannelResolvable,
   Region,
   GuildRoleManager,
   GuildChannelManager,
