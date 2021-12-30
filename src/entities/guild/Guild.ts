@@ -70,7 +70,6 @@ export default class Guild {
     public systemChannelId: Snowflake,
     public vanityUrlCode: string | null,
     public embeddedActivities: any[],
-    public hasProgressBarEnabled: boolean,
     public invites: InviteManager,
   ) {
   }
@@ -194,7 +193,7 @@ export default class Guild {
 
   public async removeIcon (): Promise<void> {
     const request = Application.createRequest()
-    const { data } =  await request.patch(`/guilds/${this.id}`, {
+    const data =  await request.patch(`/guilds/${this.id}`, {
       icon: null
     })
 
