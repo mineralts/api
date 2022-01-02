@@ -1,4 +1,4 @@
-import { Collection } from '@mineralts/core'
+import Collection from '../../utils/Collection'
 import GuildMember from './GuildMember'
 import { Snowflake } from '../../types'
 

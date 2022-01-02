@@ -1,4 +1,4 @@
-import { Collection } from '@mineralts/core'
+import Collection from '../../utils/Collection'
 import {
   ExplicitContentLevel, Feature, GuildFeature, LocalPath, Milliseconds,
   NotificationLevel,

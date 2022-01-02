@@ -43,6 +43,7 @@ import EmbedAuthor from './src/entities/embed/EmbedAuthor'
 import EmbedThumbnail from './src/entities/embed/EmbedThumbnail'
 import EmbedImage from './src/entities/embed/EmbedImage'
 import EmbedFooter from './src/entities/embed/EmbedFooter'
+import Reaction from './src/entities/reaction/Reaction'
 import {
   ActivityType,
   ChannelResolvable,
@@ -103,5 +104,6 @@ export {
   EmbedThumbnail,
   EmbedAuthor,
   EmbedImage,
-  EmbedFooter
+  EmbedFooter,
+  Reaction
 }

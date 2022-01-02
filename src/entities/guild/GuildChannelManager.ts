@@ -1,4 +1,4 @@
-import { Collection } from '@mineralts/core'
+import Collection from '../../utils/Collection'
 import { ChannelOptionResolvable, ChannelResolvable, ChannelTypeResolvable, Snowflake } from '../../types'
 import Guild from './Guild'
 

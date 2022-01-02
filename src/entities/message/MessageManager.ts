@@ -1,4 +1,4 @@
-import { Collection } from '@mineralts/core'
+import Collection from '../../utils/Collection'
 import { RequestOptions, Snowflake } from '../../types'
 import Message from './index'
 import TextChannel from '../channels/TextChannel'

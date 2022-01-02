@@ -1,10 +1,10 @@
-import { Collection } from '@mineralts/core'
 import Message from '../message'
 import { RequestOptions, Snowflake } from '../../types'
 import GuildMember from '../guild/GuildMember'
 import Client from '../client'
 import Emoji from '../emoji'
 import Reaction from './Reaction'
+import Collection from '../../utils/Collection'
 
 export default class ReactionManager {
   public readonly cache: Collection<Snowflake, Reaction[]> = new Collection()

@@ -1,4 +1,4 @@
-import { Collection } from '@mineralts/core'
+import Collection from '../../utils/Collection'
 import { ClientOptions, Snowflake } from '../../types'
 import User from '../user'
 import Presence from '../presence'
