@@ -5,6 +5,7 @@ import Guild from './Guild'
 import GuildMemberRoleManager from './GuildMemberRoleManager'
 import Role from '../roles'
 import VoiceState from '../voice/VoiceState'
+import Application from '@mineralts/application'
 
 export default class GuildMember {
   constructor (
@@ -21,9 +22,9 @@ export default class GuildMember {
   }
 
   public async setUsername (value: string) {
-    const request = new Request(`/guilds/${this.guild.id}/members/${this.id}`)
-    // await request.patch({ nick: value })
-    //
-    // this.username = value
+    const request = Application.createRequest()
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, { nick: value })
+
+    this.username = value
   }
 }
