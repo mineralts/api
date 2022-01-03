@@ -1,6 +1,7 @@
 import Collection from '../../utils/Collection'
 import { ChannelOptionResolvable, ChannelResolvable, ChannelTypeResolvable, Snowflake } from '../../types'
 import Guild from './Guild'
+import Application from '@mineralts/application'
 
 export default class GuildChannelManager {
   public cache: Collection<Snowflake, ChannelResolvable> = new Collection()
@@ -15,7 +16,7 @@ export default class GuildChannelManager {
 
   public async create (channel: ChannelOptionResolvable) {
     let payload: any
-    const request = new Request(`/guilds/${this.guild?.id}/channels`)
+    const request = Application.createRequest()
     const baseChannel = {
       name: channel.name,
       type: ChannelTypeResolvable[channel.type],
@@ -24,34 +25,34 @@ export default class GuildChannelManager {
     }
 
     if (channel.type === 'GUILD_TEXT') {
-      // payload = await request.post({
-      //   ...baseChannel,
-      //   nsfw: channel.options?.nsfw || false,
-      //   rate_limit_per_user: channel.options?.cooldown || 0,
-      //   topic: channel.options?.topic || ''
-      // })
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
+        ...baseChannel,
+        nsfw: channel.options?.nsfw || false,
+        rate_limit_per_user: channel.options?.cooldown || 0,
+        topic: channel.options?.topic || ''
+      })
     }
 
     if (channel.type === 'GUILD_VOICE') {
-      // payload = await request.post({
-      //   ...baseChannel,
-      //   user_limit: channel.options?.userLimit || 0,
-      //   bitrate: channel.options?.bitrate || 64000
-      // })
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
+        ...baseChannel,
+        user_limit: channel.options?.userLimit || 0,
+        bitrate: channel.options?.bitrate || 64000
+      })
     }
 
     if (channel.type === 'GUILD_CATEGORY') {
-      // payload = await request.post({
-      //   ...baseChannel
-      // })
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
+        ...baseChannel
+      })
     }
 
     if (channel.type === 'GUILD_STAGE_VOICE') {
-      // payload = await request.post({
-      //   ...baseChannel,
-      //   user_limit: channel.options?.userLimit || 0,
-      //   bitrate: channel.options?.bitrate || 64000
-      // })
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
+        ...baseChannel,
+        user_limit: channel.options?.userLimit || 0,
+        bitrate: channel.options?.bitrate || 64000
+      })
     }
 
     return this.cache.get(payload.id)
