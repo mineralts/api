@@ -1,4 +1,4 @@
-import { MessageOption, RequestOptions, Snowflake } from '../../types'
+import { MessageOption, Snowflake } from '../../types'
 import { DateTime } from 'luxon'
 import GuildMember from '../guild/GuildMember'
 import Guild from '../guild/Guild'
@@ -34,53 +34,54 @@ export default class Message {
   ) {
   }
 
-  public async crossPost (option?: RequestOptions) {
+  public async crossPost () {
     if (this.channel?.type === 'GUILD_NEWS') {
-      const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}/crosspost`)
+      // const request = Application.createRequest()
+      // const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}/crosspost`)
       // console.log(await request.post(null, option))
     }
   }
 
-  public async pin (option?: RequestOptions) {
+  public async pin () {
     if (!this.isPinned) {
-      const request = new Request(`/channels/${this.channel?.id}/pins/${this.id}`)
-      // await request.update({}, option)
+      const request = Application.createRequest()
+      await request.patch(`/channels/${this.channel?.id}/pins/${this.id}`, {})
     }
   }
 
-  public async unPin (option?: RequestOptions) {
+  public async unPin () {
     if (!this.isPinned) {
-      const request = new Request(`/channels/${this.channel?.id}/pins/${this.id}`)
-      // await request.delete(option)
+      const request = Application.createRequest()
+      await request.delete(`/channels/${this.channel?.id}/pins/${this.id}`)
     }
   }
 
-  public async delete (options?: RequestOptions) {
-    const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}`)
-    // await request.delete(options)
+  public async delete () {
+    const request = Application.createRequest()
+    await request.delete(`/channels/${this.channel?.id}/messages/${this.id}`)
   }
 
   public async edit (message: MessageOption) {
-    const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}`)
-    // await request.patch({
-    //   content: message.content,
-    //   embeds: message.embeds,
-    //   attachment: message.attachment,
-    //   components: message.components,
-    // })
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.channel?.id}/messages/${this.id}`, {
+      content: message.content,
+      embeds: message.embeds,
+      attachment: message.attachment,
+      components: message.components,
+    })
   }
 
   public async reload () {
     await this.edit(this)
   }
 
-  public async react (emoji: string | Emoji, option?: RequestOptions) {
+  public async react (emoji: string | Emoji, ) {
     const encodedEmoji = emoji instanceof Emoji
       ? encodeURI(`${emoji.label}:${emoji.id}`)
       : encodeURI(emoji)
 
-    const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}/reactions/${encodedEmoji}/@me`)
-    // await request.update(null, option)
+    const request = Application.createRequest()
+    await request.patch(`/channels/${this.channel?.id}/messages/${this.id}/reactions/${encodedEmoji}/@me`, null)
     const client = Application.getClient()
 
     let a: Emoji = emoji as Emoji
@@ -90,15 +91,5 @@ export default class Message {
     }
 
     this.reactions.addReaction(a, client)
-  }
-
-  public async fetch () {
-    const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}`)
-    // const payload = await request.get()
-    //
-    // if (payload) {
-    //   const message = createMessageFromPayload(payload)
-    //   this.channel?.messages.cache.set(this.id, message)
-    // }
   }
 }
