@@ -2,6 +2,7 @@ import Emoji from '../emoji'
 import { ButtonStyle } from '../../types'
 import { keyFromEnum } from '../../utils'
 import BaseButton from './BaseButton'
+import Application from '@mineralts/application'
 
 export default class Button extends BaseButton {
   public customId?: string
@@ -58,7 +59,8 @@ export default class Button extends BaseButton {
 
   public toJson () {
     if (!this.customId) {
-      // Logger.send('error', `${this.label} component has not customId.`)
+      const logger = Application.getLogger()
+      logger.error(`${this.label} component has not customId.`)
       process.exit(0)
     }
 
