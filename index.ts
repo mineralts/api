@@ -31,7 +31,7 @@ import TextChannelResolvable from './src/entities/channels/TextChannelResolvable
 import MessageManager from './src/entities/message/MessageManager'
 import Collection from './src/utils/Collection'
 import Channel from './src/entities/channels/Channel'
-import GuildManager from './src/entities/GuildManager'
+import GuildManager from './src/entities/guildManager'
 import Invite from './src/entities/invitation/Invite'
 import Message from './src/entities/message'
 import MentionResolvable from './src/entities/mention/MentionResolvable'
