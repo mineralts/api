@@ -1,5 +1,6 @@
 import Emoji from '../emoji'
 import BaseButton from './BaseButton'
+import Application from '@mineralts/application'
 
 export default class ButtonLink extends BaseButton {
   public url?: string
@@ -31,7 +32,8 @@ export default class ButtonLink extends BaseButton {
 
   public toJson () {
     if (!this.url) {
-      // Logger.send('error', `${this.label} component has not url.`)
+      const logger = Application.getLogger()
+      logger.error(`${this.label} component has not url.`)
       process.exit(0)
     }
 
