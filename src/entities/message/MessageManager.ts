@@ -1,7 +1,9 @@
 import Collection from '../../utils/Collection'
-import { RequestOptions, Snowflake } from '../../types'
+import { Snowflake } from '../../types'
 import Message from './index'
 import TextChannel from '../channels/TextChannel'
+import Application from '@mineralts/application'
+import { MessageBuilder } from '@mineralts/core'
 
 export default class MessageManager {
   public cache: Collection<Snowflake, Message> = new Collection()
@@ -9,28 +11,42 @@ export default class MessageManager {
   constructor (private channel?: TextChannel) {
   }
 
-  public async fetch (id?: Snowflake, option?: RequestOptions): Promise<MessageManager> {
-    if (id) {
-      const request = new Request(`/channels/${this.channel?.id}/messages/${id}`)
-      // const payload = await request.get(option)
-      // this.instantiate(payload)
-      // return this
+  public async fetch (id: Snowflake): Promise<Message>
+  public async fetch (options?: { before?: Snowflake, after?: Snowflake, around?: Snowflake, limit?: number }): Promise<void>
+  public async fetch (value?: { before?: Snowflake, after?: Snowflake, around?: Snowflake, limit?: number } | Snowflake): Promise<Message | void>{
+    const request = Application.createRequest()
+
+    if (typeof value === 'string') {
+      const payload = await request.get(`/channels/${this.channel?.id}/messages/${value}`)
+      return this.instantiate(payload)
     }
 
-    const request = new Request(`/channels/${this.channel?.id}/messages`)
-    // const payload = await request.get(option)
-    //
-    // payload.forEach((item) => this.instantiate(item))
-    //
-    return this
+    let query = ''
+
+    if (value) {
+      if (Object.entries(value).length > 1) {
+        const logger = Application.getLogger()
+        logger.error('The before, after, and around keys are mutually exclusive, only one may be passed at a time.')
+        process.exit(1)
+      }
+
+      Object.entries(value).forEach(([key, value]: [string, string | number]) => {
+        query += `${key}=${value}`
+      })
+    }
+
+    const payload = await request.get(`/channels/${this.channel?.id}/messages?${query}`)
+    payload.forEach((item) => this.instantiate(item))
   }
 
-  private instantiate (payload) {
-    // const message = createMessageFromPayload({
-    //   ...payload,
-    //   guild_id: this.channel?.guild.id
-    // })
-    //
-    // this.cache.set(message.id, message)
+  private instantiate (payload): Message {
+    const messageBuilder = new MessageBuilder(Application.getClient())
+    const message = messageBuilder.build({
+      ...payload,
+      guild_id: this.channel!.guild!.id
+    })
+
+    this.cache.set(message.id, message)
+    return message
   }
 }
