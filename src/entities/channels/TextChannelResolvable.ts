@@ -74,6 +74,7 @@ export default class TextChannelResolvable extends Channel {
     if (!messageOption.content?.length && !messageOption.embeds?.length) {
       const logger = Application.getLogger()
       logger.error('Invalid message body')
+      process.exit(1)
     }
 
     const payload = await request.post(`/channels/${this.id}/messages`, {
