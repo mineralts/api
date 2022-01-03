@@ -57,4 +57,5 @@ export default class GuildChannelManager {
 
     return this.cache.get(payload.id)
   }
+
 }
