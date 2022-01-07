@@ -35,6 +35,7 @@ import SelectMenu from '../entities/select-menu'
 import MessageEmbed from '../entities/embed/MessageEmbed'
 import EmbedRow from '../entities/embed/EmbedRow'
 import MessageAttachment from '../entities/message/MessageAttachment'
+import Color from '../entities/colors'
 
 export type Snowflake = string
 export type Milliseconds = number
@@ -220,6 +221,8 @@ export interface ClientEvents {
   voiceLeave: [member: GuildMember]
   memberBoostAdd: [member: GuildMember]
   memberBoostRemove: [member: GuildMember]
+  memberTimeoutAdd: [member: GuildMember, duration: number]
+  memberTimeoutRemove: [member: GuildMember]
   interactionButtonCreate: [interaction: ButtonInteraction]
   [key: `interactionButton::${string}`]: [interaction: ButtonInteraction]
   interactionSelectMenuCreate: [interaction: SelectMenuInteraction]
@@ -376,4 +379,14 @@ export interface MessageOption {
   components?: EmbedRow[]
   attachment?: MessageAttachment
   isClientSide?: boolean
+}
+
+export type RoleOption = {
+  name: string
+  everyone: boolean
+  color: keyof typeof Color | string
+  hoist?: boolean
+  emoji?: string
+  icon?: string
+  isMentionable?: boolean
 }

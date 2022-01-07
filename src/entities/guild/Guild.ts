@@ -168,7 +168,7 @@ export default class Guild {
     }
   }
 
-  private hasFeature(feature: keyof typeof Feature): boolean {
+  public hasFeature(feature: keyof typeof Feature): boolean {
     return this.features.includes(feature)
   }
 
@@ -183,8 +183,8 @@ export default class Guild {
 
     const request = Application.createRequest()
     const data = await request.patch(`/guilds/${this.id}`, {
-      icon: `data:image/png;base64,${file}` }
-    )
+      icon: `data:image/png;base64,${file}`
+    })
 
     if (data) {
       this.icon = data.icon
