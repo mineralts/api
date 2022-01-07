@@ -17,6 +17,7 @@ export default class GuildMember {
     public highestRole: Role | null,
     public isPending: boolean,
     public voice: VoiceState,
+    public communicationTimeout: DateTime | null,
     public joinedAt: DateTime,
   ) {
   }
