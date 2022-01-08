@@ -24,8 +24,24 @@ export default class GuildMember {
 
   public async setUsername (value: string) {
     const request = Application.createRequest()
-    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, { nick: value })
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, {
+      nick: value
+    })
+  }
 
-    this.username = value
+  public async setMute (date: DateTime, reason?: string) {
+    const request = Application.createRequest()
+
+    if (reason) {
+      request.defineHeaders({
+        'X-Audit-Log-Reason': reason
+      })
+    }
+
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, {
+      communication_disabled_until: date
+    })
+
+    request.resetHeaders('X-Audit-Log-Reason')
   }
 }

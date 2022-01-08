@@ -390,3 +390,14 @@ export type RoleOption = {
   icon?: string
   isMentionable?: boolean
 }
+
+export type DateTimeDuration = {
+  year: number
+  month: number
+  day: number
+  ordinal: number
+  hours: number
+  minute: number
+  second: number
+  millisecond: number
+}
