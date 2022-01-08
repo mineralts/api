@@ -60,4 +60,19 @@ export default class GuildMember {
 
     request.resetHeaders('X-Audit-Log-Reason')
   }
+  
+  public async ban (options: { messageCount?: number, reason?: string }) {
+    if (options.messageCount && (options.messageCount < 0 || options.messageCount > 50)) {
+      const logger = Application.getLogger()
+      logger.error(`You can delete between 0 and 7 days only (${options.messageCount} set).`)
+
+      return
+    }
+
+    const request = Application.createRequest()
+    await request.patch(`/guilds/${this.guild.id}/bans/${this.id}`, {
+      delete_message_days: options.messageCount,
+      reason: options.reason
+    })
+  }
 }
