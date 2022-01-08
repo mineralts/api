@@ -83,4 +83,18 @@ export default class GuildMember {
 
     request.resetHeaders('X-Audit-Log-Reason')
   }
+
+  public async unban (reason?: string) {
+    const request = Application.createRequest()
+
+    if (reason) {
+      request.defineHeaders({
+        'X-Audit-Log-Reason': reason
+      })
+    }
+
+    await request.delete(`/guilds/${this.guild.id}/bans/${this.id}`)
+
+    request.resetHeaders('X-Audit-Log-Reason')
+  }
 }
