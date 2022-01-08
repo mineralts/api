@@ -44,4 +44,20 @@ export default class GuildMember {
 
     request.resetHeaders('X-Audit-Log-Reason')
   }
+
+  public async removeMute (reason?: string) {
+    const request = Application.createRequest()
+
+    if (reason) {
+      request.defineHeaders({
+        'X-Audit-Log-Reason': reason
+      })
+    }
+
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, {
+      communication_disabled_until: null
+    })
+
+    request.resetHeaders('X-Audit-Log-Reason')
+  }
 }
