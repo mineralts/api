@@ -94,7 +94,6 @@ export default class GuildMember {
     }
 
     await request.delete(`/guilds/${this.guild.id}/bans/${this.id}`)
-
     request.resetHeaders('X-Audit-Log-Reason')
   }
 
@@ -108,5 +107,6 @@ export default class GuildMember {
     }
 
     await request.delete(`/guilds/${this.guild.id}/members/${this.id}`)
+    request.resetHeaders('X-Audit-Log-Reason')
   }
 }
