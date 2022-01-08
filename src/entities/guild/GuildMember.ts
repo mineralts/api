@@ -29,7 +29,7 @@ export default class GuildMember {
     })
   }
 
-  public async setMute (date: DateTime, reason?: string) {
+  public async exclude (date: DateTime, reason?: string) {
     const request = Application.createRequest()
 
     if (reason) {
@@ -45,7 +45,7 @@ export default class GuildMember {
     request.resetHeaders('X-Audit-Log-Reason')
   }
 
-  public async removeMute (reason?: string) {
+  public async sorry (reason?: string) {
     const request = Application.createRequest()
 
     if (reason) {
