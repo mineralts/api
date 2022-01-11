@@ -11,7 +11,7 @@ import Color from '../colors'
 export default class MessageEmbed {
   public title: string | undefined
   public description: string | undefined
-  public color = 0
+  public color
   public fields: EmbedField[] = []
   public author: EmbedAuthor | undefined
   public image: EmbedImage | undefined
@@ -31,8 +31,12 @@ export default class MessageEmbed {
     return this
   }
 
-  public setColor (color: keyof typeof Color) {
-    this.color = resolveColor(color)
+  public setColor (color: keyof typeof Color | string) {
+    this.color = resolveColor(
+      !color.startsWith('#')
+        ? Color[color]
+        : color
+    )
     return this
   }
 
