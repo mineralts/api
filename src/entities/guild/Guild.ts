@@ -353,14 +353,15 @@ export default class Guild {
   }
 
   public async registerCommands (assembler: Assembler) {
+    const container = assembler.application.container
     const request = Application.createRequest()
 
-    const commands = assembler.application.container.commands.filter((command) => (
+    const commands = container.commands.filter((command) => (
       command.data.scope === 'GUILD'
     ))
 
     await Promise.all(
-      assembler.application.container.subcommands.map((subcommand) => {
+      container.subcommands.map((subcommand) => {
         const parent = assembler.application.container.commands.find((command) => (
           command.data.label === subcommand.data.parent[0]
         ))
@@ -376,8 +377,7 @@ export default class Guild {
 
     await Promise.all(
       commands.map(async (command: MineralCommand & { data: CommandContext }) => {
-        console.log(serializeCommand(command.data).options[0])
-        // serializeCommand(command.data)
+        serializeCommand(command.data)
         const payload = await request.post(`/applications/${assembler.application.client.application.id}/guilds/${this.id}/commands`, {
           ...serializeCommand(command.data)
         })
