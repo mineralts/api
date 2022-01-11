@@ -44,6 +44,7 @@ import EmbedThumbnail from './src/entities/embed/EmbedThumbnail'
 import EmbedImage from './src/entities/embed/EmbedImage'
 import EmbedFooter from './src/entities/embed/EmbedFooter'
 import Reaction from './src/entities/reaction/Reaction'
+import CommandInteraction from './src/entities/interaction/CommandInteraction'
 import {
   ActivityType,
   ChannelResolvable,
@@ -56,6 +57,9 @@ import {
   VideoQuality,
   ComponentType,
   ButtonStyle,
+  CommandOption,
+  OptionType,
+  InteractionType
 } from './src/types'
 
 export {
@@ -105,5 +109,9 @@ export {
   EmbedAuthor,
   EmbedImage,
   EmbedFooter,
-  Reaction
+  Reaction,
+  CommandOption,
+  OptionType,
+  CommandInteraction,
+  InteractionType,
 }
