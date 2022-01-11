@@ -402,3 +402,51 @@ export type WelcomeScreen = {
   description: string
   channels: WelcomeChannel[]
 }
+
+export enum OptionType {
+  SUB_COMMAND =	1,
+  SUB_COMMAND_GROUP =	2,
+  STRING =	3,
+  BOOLEAN =	5,
+  USER =	6,
+  CHANNEL =	7,
+  ROLE =	8,
+  MENTIONABLE =	9,
+  NUMBER =	10,
+}
+
+// @ts-ignore
+export type CommandOption<T extends keyof typeof OptionType | 'CHOICE'> = OptionWrapper[T]
+
+interface OptionWrapper {
+  STRING: StringOption
+  NUMBER: NumberOption
+  CHANNEL: ChannelOption
+  CHOICE: ChoiceOption
+}
+
+type BaseOption = {
+  name: string
+  description: string
+  required?: boolean
+}
+
+export type StringOption = BaseOption & {
+  autocomplete?: boolean
+}
+
+export type NumberOption = BaseOption & {
+  autocomplete?: boolean
+  min?: number
+  max?: number
+}
+
+export type ChoiceOption = BaseOption & {
+  type: 'STRING' | 'NUMBER' | 'BOOLEAN'
+  choices: { name: string, value: string | number }[]
+}
+
+export type ChannelOption = BaseOption & {
+  channelType: (keyof ChannelOptions)[]
+  autocomplete?: boolean
+}
