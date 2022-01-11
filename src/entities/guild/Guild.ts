@@ -21,6 +21,9 @@ import GuildThreadManager from './GuildThreadManager'
 import GuildEmojiManager from './GuildEmojiManager'
 import InviteManager from '../invitation/InviteManager'
 import GuildHashes from './GuildHashes'
+import { Assembler, CommandContext } from '@mineralts/assembler'
+import { MineralCommand } from '@mineralts/core/build/src/entities/Command'
+import { serializeCommand } from '../../utils'
 
 export default class Guild {
   public commands: Collection<Snowflake, Command> = new Collection()
@@ -349,13 +352,18 @@ export default class Guild {
     }
   }
 
-  public async registerCommands (...commands: Command[]) {
-    const client = Application.getClient()
+  public async registerCommands (assembler: Assembler) {
     const request = Application.createRequest()
 
+    const commands = assembler.application.container.commands.filter((command) => (
+      command.data.scope === 'GUILD'
+    ))
+
     return Promise.all(
-      commands.map(async (command: Command) => {
-        const payload = await request.post(`/applications/${client.application.id}/guilds/${this.id}/commands`, command.toJson())
+      commands.map(async (command: MineralCommand & { data: CommandContext }) => {
+        const payload = await request.post(`/applications/${assembler.application.client.application.id}/guilds/${this.id}/commands`, {
+          ...serializeCommand(command.data)
+        })
 
         command.id = payload.id
         command.guild = this
