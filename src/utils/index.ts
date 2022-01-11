@@ -1,4 +1,4 @@
-import { OptionType } from '../types'
+import { ChannelTypeResolvable, OptionType } from '../types'
 import { CommandContext } from '@mineralts/assembler'
 
 export function resolveColor(color) {
@@ -29,19 +29,28 @@ export function parseEmoji(text: string) {
 
 export function serializeCommand (command: CommandContext) {
   return {
-    type: 1,
     name: command.label,
     description: command.description,
-    options: command.options.map((option) => {
+    options: walk(command.options),
+  }
+
+  function walk (item) {
+    return item.map((option) => {
       return {
+        type: OptionType[option.type],
         name: option.name,
         description: option.description,
-        type: OptionType[option.type],
         required: option.required,
         choices: option.choices,
         min_value: option.min,
         max_value: option.max,
-        autocomplete: OptionType[option.type] !== 'CHOICE' && option.autocomplete
+        autocomplete: OptionType[option.type] !== 'CHOICE' && option.autocomplete,
+        channel_types: option.channelType
+          ? option.channelType.map((channel) => ChannelTypeResolvable[channel])
+          : undefined,
+        options: option.options
+          ? walk(option.options)
+          : undefined
       }
     })
   }

@@ -359,8 +359,25 @@ export default class Guild {
       command.data.scope === 'GUILD'
     ))
 
-    return Promise.all(
+    await Promise.all(
+      assembler.application.container.subcommands.map((subcommand) => {
+        const parent = assembler.application.container.commands.find((command) => (
+          command.data.label === subcommand.data.parent[0]
+        ))
+
+        parent.data.options.push({
+          name: subcommand.data.label,
+          description: subcommand.data.description,
+          options: subcommand.data.options,
+          type: 'SUB_COMMAND'
+        })
+      })
+    )
+
+    await Promise.all(
       commands.map(async (command: MineralCommand & { data: CommandContext }) => {
+        console.log(serializeCommand(command.data).options[0])
+        // serializeCommand(command.data)
         const payload = await request.post(`/applications/${assembler.application.client.application.id}/guilds/${this.id}/commands`, {
           ...serializeCommand(command.data)
         })
