@@ -377,7 +377,6 @@ export default class Guild {
 
     await Promise.all(
       commands.map(async (command: MineralCommand & { data: CommandContext }) => {
-        serializeCommand(command.data)
         const payload = await request.post(`/applications/${assembler.application.client.application.id}/guilds/${this.id}/commands`, {
           ...serializeCommand(command.data)
         })
