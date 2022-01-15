@@ -22,7 +22,7 @@ import GuildEmojiManager from './GuildEmojiManager'
 import InviteManager from '../invitation/InviteManager'
 import GuildHashes from './GuildHashes'
 import { Assembler, CommandContext } from '@mineralts/assembler'
-import { MineralCommand } from '@mineralts/core/build/src/entities/Command'
+import { MineralCommand } from '@mineralts/core'
 import { serializeCommand } from '../../utils'
 
 export default class Guild {
@@ -381,9 +381,12 @@ export default class Guild {
           ...serializeCommand(command.data)
         })
 
+        // @ts-ignore
         command.id = payload.id
+        // @ts-ignore
         command.guild = this
 
+        // @ts-ignore
         this.commands.set(command.id!, command)
       })
     )
