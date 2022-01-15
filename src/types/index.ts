@@ -240,6 +240,39 @@ export interface ClientEvents {
   typingStart: [member: GuildMember, channel: TextChannelResolvable]
 }
 
+export const clientEvents = [
+  'ready',
+  'guildCreate',
+  'messageCreate',
+  'messageUpdate',
+  'messageDelete',
+  'channelCreate',
+  'channelDelete',
+  'channelUpdate',
+  'rateLimit',
+  'messageReactionAdd',
+  'messageReactionRemove',
+  'presenceUpdate',
+  'voiceJoin',
+  'voiceLeave',
+  'memberBoostAdd',
+  'memberBoostRemove',
+  'memberTimeoutAdd',
+  'memberTimeoutRemove',
+  'interactionButtonCreate',
+  'interactionSelectMenuCreate',
+  'interactionCommandCreate',
+  'rulesAccept',
+  'guildMemberJoin',
+  'guildMemberLeave',
+  'inviteCreate',
+  'inviteDelete',
+  'roleCreate',
+  'roleDelete',
+  'roleUpdate',
+  'typingStart'
+]
+
 export enum ButtonStyle {
   PRIMARY =	1,
   SECONDARY = 2,
