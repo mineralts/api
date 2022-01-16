@@ -366,6 +366,12 @@ export default class Guild {
           command.data.label === subcommand.data.parent[0]
         ))
 
+        if (!parent) {
+          const logger = Application.getLogger()
+          logger.fatal(`Subcommand ${subcommand.data.parent[0]}.${subcommand.data.label} is invalid because it is not associated with any parent command.`)
+          process.exit(1)
+        }
+
         parent.data.options.push({
           name: subcommand.data.label,
           description: subcommand.data.description,
@@ -376,19 +382,19 @@ export default class Guild {
     )
 
     await Promise.all(
-      commands.map(async (command: MineralCommand & { data: CommandContext }) => {
+      commands.map(async (command: MineralCommand & { data: CommandContext, id: string, guild: Guild }) => {
         const payload = await request.post(`/applications/${assembler.application.client.application.id}/guilds/${this.id}/commands`, {
           ...serializeCommand(command.data)
         })
 
-        // @ts-ignore
         command.id = payload.id
-        // @ts-ignore
         command.guild = this
 
         // @ts-ignore
         this.commands.set(command.id!, command)
       })
     )
+
+    console.log(this.commands)
   }
 }
