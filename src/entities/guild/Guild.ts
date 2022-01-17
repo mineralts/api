@@ -394,7 +394,5 @@ export default class Guild {
         this.commands.set(command.id!, command)
       })
     )
-
-    console.log(this.commands)
   }
 }
