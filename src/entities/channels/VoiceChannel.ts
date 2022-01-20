@@ -10,23 +10,27 @@ export default class VoiceChannel extends Channel {
     name: string,
     guildId: Snowflake,
     guild: Guild | undefined,
-    public maxUser: number,
-    public region: keyof typeof RTC_Region,
-    public rateLimitPerUser: number,
+    private maxUser: number,
+    private region: keyof typeof RTC_Region,
+    private rateLimitPerUser: number,
     position: number,
-    public permission: any[],
+    private permission: any[],
     parentId: Snowflake,
-    public bitrate: number,
-    public videoQuality: keyof typeof VideoQuality,
+    private bitrate: number,
+    private videoQuality: keyof typeof VideoQuality,
     parent?: CategoryChannel,
   ) {
     super(id, 'GUILD_VOICE', name, guildId, guild, parentId, position, parent)
   }
 
+  public getBitrate (): number {
+    return this.bitrate
+  }
+
   public async setBitrate (value: number) {
     const request = Application.createRequest()
     if (value >= 8000 && value <= 96000) {
-      await request.patch(`/channels/${this.id}`, { bitrate: value })
+      await request.patch(`/channels/${this.getId()}`, { bitrate: value })
       this.bitrate = value
     } else {
       const logger = Application.getLogger()
@@ -34,9 +38,13 @@ export default class VoiceChannel extends Channel {
     }
   }
 
+  public getRtcRegion (): keyof typeof RTC_Region {
+    return this.region
+  }
+
   public async setRtcRegion (region: keyof typeof RTC_Region) {
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.id}`, {
+    await request.patch(`/channels/${this.getId()}`, {
       rtc_region: region !== 'AUTO'
         ? RTC_Region[region]
         : null
@@ -45,18 +53,26 @@ export default class VoiceChannel extends Channel {
     this.region = region
   }
 
-  public async setMaxUser (value: number | 'UNLIMITED') {
+  public getMaxMember (): number {
+    return this.rateLimitPerUser
+  }
+
+  public async setMaxMember (value: number | 'UNLIMITED') {
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.id}`, {
+    await request.patch(`/channels/${this.getId()}`, {
       user_limit: value === 'UNLIMITED' ? 0 : value
     })
 
     this.maxUser = value === 'UNLIMITED' ? 0 : value
   }
 
+  public getVideoQuality (): keyof typeof VideoQuality {
+    return this.videoQuality
+  }
+
   public async setVideoQuality (quality: keyof typeof VideoQuality) {
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.id}`, {
+    await request.patch(`/channels/${this.getId()}`, {
       video_quality_mode: VideoQuality[quality]
     })
 
