@@ -16,11 +16,11 @@ export function resolveColor(color) {
   return color
 }
 
-export function keyFromEnum<Enum> (entryEnum: Enum, payload: any) {
-  return Object.keys(entryEnum)[Object.values(entryEnum).indexOf(payload)]
+export function keyFromEnum<Enum> (entryEnum: Enum, payload: any): keyof Enum {
+  return Object.keys(entryEnum)[Object.values(entryEnum).indexOf(payload)] as any
 }
 
-export function parseEmoji(text: string) {
+export function parseEmoji(text: string): any {
   if (text.includes('%')) text = decodeURIComponent(text)
   if (!text.includes(':')) return { name: text, id: null }
   const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/)
