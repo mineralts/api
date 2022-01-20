@@ -15,14 +15,42 @@ export default class Client {
 
   constructor (
     private container: any,
-    public readonly token: string,
+    private token: string,
     private options: ClientOptions,
-    public readonly user: User,
-    public readonly sessionId: string,
-    public readonly presences: Presence[],
-    public readonly application: { id: string, flags: number },
-    public commands: Collection<Snowflake, Command> = new Collection(),
+    private user: User,
+    private sessionId: string,
+    private presences: Presence[],
+    private application: { id: string, flags: number },
+    private commands: Collection<Snowflake, Command> = new Collection(),
   ) {
+  }
+
+  public getOptions (): ClientOptions {
+    return this.options
+  }
+
+  public getToken (): string {
+    return this.token
+  }
+
+  public getUser (): User {
+    return this.user
+  }
+
+  public getSessionId (): string {
+    return this.sessionId
+  }
+
+  public getPresences (): Presence[] {
+    return this.presences
+  }
+
+  public getApplication (): { id: string, flags: number } {
+    return this.application
+  }
+
+  public getCommands (): Collection<Snowflake, Command> {
+    return this.commands
   }
   
   public async registerGlobalCommands (assembler: Assembler) {
