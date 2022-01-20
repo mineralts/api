@@ -6,10 +6,26 @@ import Channel from '../channels/Channel'
 
 export default class MentionResolvable {
   constructor (
-    public isEveryone: boolean,
-    public roles: Collection<Snowflake, Role>,
-    public members: Collection<Snowflake, GuildMember>,
-    public channels: Collection<Snowflake, Channel>
+    private everyone: boolean,
+    private roles: Collection<Snowflake, Role>,
+    private members: Collection<Snowflake, GuildMember>,
+    private channels: Collection<Snowflake, Channel>
   ) {
+  }
+
+  public isEveryone (): boolean {
+    return this.everyone
+  }
+
+  public getRoles (): Collection<Snowflake, Role> {
+    return this.roles
+  }
+
+  public getMembers (): Collection<Snowflake, GuildMember> {
+    return this.members
+  }
+
+  public getChannels (): Collection<Snowflake, Channel> {
+    return this.channels
   }
 }
