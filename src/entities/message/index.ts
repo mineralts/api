@@ -12,30 +12,94 @@ import { parseEmoji } from '../../utils'
 import MentionResolvable from '../mention/MentionResolvable'
 
 export default class Message {
-  public reactions: ReactionManager = new ReactionManager(this)
+  private reactions: ReactionManager = new ReactionManager(this)
 
   constructor (
-    public id: Snowflake,
-    public type: number,
-    public readonly flags: string[],
-    public readonly isTTS: boolean,
-    public readonly createdAt: DateTime | null,
-    public readonly updatedAt: DateTime | null,
-    public readonly referencedMessage: Message | null | undefined,
-    public isPinned: boolean,
-    public readonly mentions: MentionResolvable,
-    public readonly author: GuildMember | undefined,
-    public readonly guild: Guild | undefined,
-    public readonly channel: TextChannel,
-    public readonly content: string,
-    public readonly attachment: MessageAttachment,
-    public readonly components: any[],
-    public readonly embeds: MessageEmbed[],
+    private id: Snowflake,
+    private type: number,
+    private flags: string[],
+    private tts: boolean,
+    private createdAt: DateTime | null,
+    private updatedAt: DateTime | null,
+    private referencedMessage: Message | null,
+    private pinned: boolean,
+    private mentions: MentionResolvable,
+    private author: GuildMember | undefined,
+    private guild: Guild | undefined,
+    private channel: TextChannel,
+    private content: string,
+    private attachment: MessageAttachment,
+    private components: any[],
+    private embeds: MessageEmbed[],
   ) {
   }
 
+  public getId (): Snowflake {
+    return this.id
+  }
+
+  public getType (): number {
+    return this.type
+  }
+
+  public getFlags (): string[] {
+    return this.flags
+  }
+
+  public isTTS (): boolean {
+    return this.tts
+  }
+
+  public getCreatedAt (): DateTime | null {
+    return this.createdAt
+  }
+
+  public getUpdatedAt (): DateTime | null {
+    return this.updatedAt
+  }
+
+  public getReferencedMessage (): Message | null {
+    return this.referencedMessage
+  }
+
+  public isPinned (): boolean {
+    return this.pinned
+  }
+
+  public getMentions (): MentionResolvable {
+    return this.mentions
+  }
+
+  public getAuthor (): GuildMember | undefined {
+    return this.author
+  }
+
+  public getGuild (): Guild | undefined {
+    return this.guild
+  }
+
+  public getContent (): string {
+    return this.content
+  }
+
+  public getAttachment (): MessageAttachment {
+    return this.attachment
+  }
+
+  public getComponents (): any[] {
+    return this.components
+  }
+
+  public getEmbeds (): MessageEmbed[] {
+    return this.embeds
+  }
+
+  public getReactions (): ReactionManager {
+    return this.reactions
+  }
+
   public async crossPost () {
-    if (this.channel?.type === 'GUILD_NEWS') {
+    if (this.channel.getType() === 'GUILD_NEWS') {
       // const request = Application.createRequest()
       // const request = new Request(`/channels/${this.channel?.id}/messages/${this.id}/crosspost`)
       // console.log(await request.post(null, option))
@@ -45,25 +109,25 @@ export default class Message {
   public async pin () {
     if (!this.isPinned) {
       const request = Application.createRequest()
-      await request.patch(`/channels/${this.channel?.id}/pins/${this.id}`, {})
+      await request.patch(`/channels/${this.channel?.getId()}/pins/${this.id}`, {})
     }
   }
 
   public async unPin () {
     if (!this.isPinned) {
       const request = Application.createRequest()
-      await request.delete(`/channels/${this.channel?.id}/pins/${this.id}`)
+      await request.delete(`/channels/${this.channel?.getId()}/pins/${this.id}`)
     }
   }
 
   public async delete () {
     const request = Application.createRequest()
-    await request.delete(`/channels/${this.channel?.id}/messages/${this.id}`)
+    await request.delete(`/channels/${this.channel?.getId()}/messages/${this.id}`)
   }
 
   public async edit (message: MessageOption) {
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.channel?.id}/messages/${this.id}`, {
+    await request.patch(`/channels/${this.channel?.getId()}/messages/${this.id}`, {
       content: message.content,
       embeds: message.embeds,
       attachment: message.attachment,
@@ -72,16 +136,23 @@ export default class Message {
   }
 
   public async reload () {
-    await this.edit(this)
+    await this.edit({
+      content: this.content,
+      embeds: this.embeds,
+      attachment: this.attachment,
+      components: this.components,
+      tts: this.tts,
+      private: false,
+    })
   }
 
   public async react (emoji: string | Emoji, ) {
     const encodedEmoji = emoji instanceof Emoji
-      ? encodeURI(`${emoji.label}:${emoji.id}`)
+      ? encodeURI(`${emoji.getLabel()}:${emoji.getId()}`)
       : encodeURI(emoji)
 
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.channel?.id}/messages/${this.id}/reactions/${encodedEmoji}/@me`, null)
+    await request.patch(`/channels/${this.channel?.getId()}/messages/${this.id}/reactions/${encodedEmoji}/@me`, null)
     const client = Application.getClient()
 
     let a: Emoji = emoji as Emoji
