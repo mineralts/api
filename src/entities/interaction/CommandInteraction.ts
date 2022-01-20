@@ -1,5 +1,4 @@
 import {
-  ChannelResolvable, CommandParamsResolvable,
   ComponentType,
   InteractionType,
   MessageComponentResolvable,
@@ -10,19 +9,54 @@ import Message from '../message'
 import GuildMember from '../guild/GuildMember'
 import Application from '@mineralts/application'
 import EmbedRow from '../embed/EmbedRow'
+import CommandOptions from './CommandOptions'
 
 export default class CommandInteraction {
   constructor (
-    public readonly id: Snowflake,
-    public readonly version: number,
-    public readonly type: keyof typeof InteractionType,
-    public readonly token: string,
-    public readonly customId: string | undefined,
-    public readonly componentType: keyof typeof ComponentType | undefined,
-    public readonly message: Message | undefined,
-    public readonly member: GuildMember,
-    public params: any,
+    private id: Snowflake,
+    private version: number,
+    private type: keyof typeof InteractionType,
+    private token: string,
+    private customId: string | undefined,
+    private componentType: keyof typeof ComponentType | undefined,
+    private message: Message | undefined,
+    private member: GuildMember,
+    private params: any,
+    private commandOptions: CommandOptions
   ) {
+    this.commandOptions = new CommandOptions(this.params, this.member)
+  }
+
+  public getId (): Snowflake {
+    return this.id
+  }
+
+  public getVersion (): number {
+    return this.version
+  }
+
+  public getType (): keyof typeof InteractionType {
+    return this.type
+  }
+
+  public getToken (): string {
+    return this.token
+  }
+
+  public getComponentType (): keyof typeof ComponentType | undefined {
+    return this.componentType
+  }
+
+  public getMessage (): Message | undefined {
+    return this.message
+  }
+
+  public getSender (): GuildMember {
+    return this.member
+  }
+
+  public getParams (): any {
+    return this.params
   }
 
   public async reply (messageOption: MessageOption): Promise<void> {
@@ -39,39 +73,12 @@ export default class CommandInteraction {
       data: {
         ...messageOption,
         components,
-        flags: messageOption.isClientSide ? 1 << 6 : undefined,
+        flags: messageOption.private ? 1 << 6 : undefined,
       }
     })
   }
 
-  public getChannel (name: string): ChannelResolvable | undefined {
-    console.log(this.params)
-    const channel = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: Snowflake }
-    return this.member.guild.channels.cache.get(channel?.value)
-  }
-
-  public getMember (name: string): GuildMember | undefined {
-    const channel = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: Snowflake }
-    return this.member.guild.members.cache.get(channel?.value)
-  }
-
-  public getString (name: string): string | undefined {
-    const stringValue = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: string }
-    return stringValue.value
-  }
-
-  public getNumber (name: string): number | undefined {
-    const numberValue = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: number }
-    return numberValue.value
-  }
-
-  public getBoolean (name: string): boolean | undefined {
-    const numberValue = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: boolean }
-    return numberValue.value
-  }
-
-  public getChoices<T> (name: string): T | undefined {
-    const choiceValue = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: T }
-    return choiceValue.value
+  public getOptions (): CommandOptions {
+    return this.commandOptions
   }
 }
