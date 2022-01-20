@@ -11,4 +11,8 @@ export default class GuildMemberRoleManager {
     })
     return this
   }
+
+  public getCache (): Collection<Snowflake, Role> {
+    return this.cache
+  }
 }
