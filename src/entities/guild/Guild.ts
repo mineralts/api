@@ -23,58 +23,67 @@ import InviteManager from '../invitation/InviteManager'
 import GuildHashes from './GuildHashes'
 import { Assembler, CommandContext } from '@mineralts/assembler'
 import { MineralCommand } from '@mineralts/core'
-import { serializeCommand } from '../../utils'
+import { keyFromEnum, serializeCommand } from '../../utils'
 
 export default class Guild {
   public commands: Collection<Snowflake, Command> = new Collection()
 
   constructor (
-    public id: Snowflake,
-    public name: string,
-    public icon: string | null,
-    public banner: string | null,
-    public splash: string | null,
-    public description: string | null,
-    public readonly premiumTier: number,
-    public readonly premiumSubscriptionCount: number,
-    public systemChannelFlags: number,
-    public explicitContentFilter: number,
-    public region: keyof typeof Region,
-    public readonly isLazy: boolean,
-    public readonly applicationId: string | null,
-    public isNSFW: boolean,
-    public memberCount: number,
-    public roles: GuildRoleManager,
-    public stageInstances: [],
-    public guildHashes: GuildHashes,
-    public afkChannelId: Snowflake,
-    public publicUpdateChannelId: Snowflake,
-    public channels: GuildChannelManager,
-    public verificationLevel: number,
-    public hasPremiumProgressBarEnabled: boolean,
-    public features: GuildFeature[],
-    public stickers: GuildStickerManager,
-    public members: GuildMemberManager,
-    public bots: GuildMemberManager,
-    public ruleChannelId: Snowflake,
-    public guildScheduledEvents: any[],
-    public defaultMessageNotifications: keyof typeof NotificationLevel,
-    public MFALevel: number,
-    public threads: GuildThreadManager,
-    public maxMemberSize: number,
-    public emojis: GuildEmojiManager,
-    public defaultLang: string,
-    public ownerId: Snowflake,
-    public owner: GuildMember | undefined,
-    public maxVideoChannelUsers: number,
-    public registeredCommandCount: number,
-    public applicationCommandCount: number,
-    public afkTimeout: number,
-    public systemChannelId: Snowflake,
-    public vanityUrlCode: string | null,
-    public embeddedActivities: any[],
-    public invites: InviteManager,
+    private id: Snowflake,
+    private _name: string,
+    private icon: string | null,
+    private banner: string | null,
+    private splash: string | null,
+    private discoverySplash: string | null,
+    private description: string | undefined,
+    private premiumTier: number,
+    private premiumSubscriptionCount: number,
+    private systemChannelFlags: number,
+    private explicitContentFilter: number,
+    private region: keyof typeof Region,
+    private isLazy: boolean,
+    private applicationId: string | null,
+    private nsfw: boolean,
+    private memberCount: number,
+    private roles: GuildRoleManager,
+    private stageInstances: [],
+    private guildHashes: GuildHashes,
+    private afkChannelId: Snowflake,
+    private publicUpdateChannelId: Snowflake,
+    private channels: GuildChannelManager,
+    private verificationLevel: number,
+    private hasPremiumProgressBarEnabled: boolean,
+    private features: GuildFeature[],
+    private stickers: GuildStickerManager,
+    private members: GuildMemberManager,
+    private bots: GuildMemberManager,
+    private ruleChannelId: Snowflake,
+    private guildScheduledEvents: any[],
+    private defaultMessageNotifications: keyof typeof NotificationLevel,
+    private MFALevel: number,
+    private threads: GuildThreadManager,
+    private maxMemberSize: number,
+    private emojis: GuildEmojiManager,
+    private defaultLang: string,
+    private ownerId: Snowflake,
+    private owner: GuildMember | undefined,
+    private maxVideoChannelUsers: number,
+    private registeredCommandCount: number,
+    private applicationCommandCount: number,
+    private afkTimeout: number,
+    private systemChannelId: Snowflake,
+    private vanityUrlCode: string | null,
+    private embeddedActivities: any[],
+    private invites: InviteManager,
   ) {
+  }
+
+  public getId (): Snowflake {
+    return this.id
+  }
+
+  public get name (): string {
+    return this._name
   }
 
   public async setName (value: string): Promise<void> {
@@ -82,8 +91,13 @@ export default class Guild {
     const result = await request.patch(`/guilds/${this.id}`, { name: value })
 
     if (result) {
-      this.name = value
+      this._name = value
     }
+  }
+
+
+  public getPreferredLocale (): keyof typeof Region {
+    return this.region
   }
 
   public async setPreferredLocale (region: keyof typeof Region): Promise<void> {
@@ -97,21 +111,39 @@ export default class Guild {
 
   public async leave (): Promise<void> {
     const client = Application.getClient()
-    if (this.ownerId === client.user.id) {
+    if (this.ownerId === client.getUser().getId()) {
       throw new Error('GUILD_OWNER')
     }
 
     const request = Application.createRequest()
     const result = await request.delete(`/guilds/${this.id}`)
     if (result) {
-      client.guilds.cache.delete(this.id)
+      client.guilds.getCache().delete(this.id)
     }
   }
 
+  public isNsfw (): boolean {
+    return this.nsfw
+  }
+
+  public getRoles (): GuildRoleManager {
+    return this.roles
+  }
+
+  public setRoles (roleManager: GuildRoleManager) {
+    this.roles = roleManager
+  }
+
+  public getChannels (): GuildChannelManager {
+    return this.channels
+  }
+
+  public getAfkChannel (): VoiceChannel | undefined {
+    return this.channels.getCache().get<VoiceChannel>(this.afkChannelId)
+  }
+
   public async setAfkChannel (voiceChannel: VoiceChannel | Snowflake): Promise<void> {
-    const value = voiceChannel instanceof VoiceChannel
-      ? voiceChannel.id
-      : voiceChannel
+    const value = voiceChannel instanceof VoiceChannel ? voiceChannel.getId() : voiceChannel
 
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, {
@@ -121,6 +153,10 @@ export default class Guild {
     if (result) {
       this.afkChannelId = value
     }
+  }
+
+  public getVerificationLevel (): keyof typeof VerificationLevel {
+    return keyFromEnum(VerificationLevel, this.verificationLevel)
   }
 
   public async setVerificationLevel (level: keyof typeof VerificationLevel): Promise<void> {
@@ -136,6 +172,10 @@ export default class Guild {
     }
   }
 
+  public getNotificationLevel (): keyof typeof NotificationLevel {
+    return this.defaultMessageNotifications
+  }
+
   public async setNotificationLevel (level: keyof typeof NotificationLevel): Promise<void> {
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, {
@@ -145,6 +185,10 @@ export default class Guild {
     if (result) {
       this.defaultMessageNotifications = level
     }
+  }
+
+  public getExplicitContentLevel (): keyof typeof ExplicitContentLevel {
+    return keyFromEnum(ExplicitContentLevel, this.explicitContentFilter)
   }
 
   public async setExplicitContentFilter (level: keyof typeof ExplicitContentLevel): Promise<void> {
@@ -160,6 +204,10 @@ export default class Guild {
     }
   }
 
+  public getAfkTimeout (): Milliseconds {
+    return this.afkTimeout
+  }
+
   public async setAfkTimeout (value: Milliseconds): Promise<void> {
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, {
@@ -173,6 +221,17 @@ export default class Guild {
 
   public hasFeature(feature: keyof typeof Feature): boolean {
     return this.features.includes(feature)
+  }
+
+  public getIcon (): string | null {
+    const environment = Application.getEnvironment()
+
+    if (environment.get('DEBUG') && !this.hasFeature('ANIMATED_ICON')) {
+      const logger = Application.getLogger()
+      logger.error('You do not have permission to upload a invitation banner')
+    }
+
+    return this.icon
   }
 
   public async setIcon (path: LocalPath): Promise<void> {
@@ -205,13 +264,15 @@ export default class Guild {
     }
   }
 
+  public getOwner (): GuildMember {
+    return this.owner!
+  }
+
   public async setOwner (member: GuildMember | Snowflake): Promise<void> {
     const client = Application.getClient()
-    const value = member instanceof GuildMember
-      ? member.id
-      :member
+    const value = member instanceof GuildMember ? member.getId() :member
 
-    if (this.ownerId === client.user.id) {
+    if (this.ownerId === client.getUser().getId()) {
       throw new Error('OWNER_IS_ALREADY_MEMBER')
     }
 
@@ -222,8 +283,19 @@ export default class Guild {
 
     if (result) {
       this.ownerId = value
-      this.owner = this.members.cache.get(value)!
+      this.owner = this.members.getCache().get(value)!
     }
+  }
+
+  public getSplash (): string | null {
+    const environment = Application.getEnvironment()
+
+    if (environment.get('DEBUG') && !this.features.includes('INVITE_SPLASH')) {
+      const logger = Application.getLogger()
+      logger.warn('You do not have permission to upload a invitation banner')
+    }
+
+    return this.splash
   }
 
   public async setSplash (path: string): Promise<void> {
@@ -245,6 +317,17 @@ export default class Guild {
     }
   }
 
+  public getDiscoverySplash (): string | null {
+    const environment = Application.getEnvironment()
+
+    if (environment.get('DEBUG') && !this.features.includes('DISCOVERABLE')) {
+      const logger = Application.getLogger()
+      logger.warn('You do not have permission to upload a discovery banner')
+    }
+
+    return this.discoverySplash
+  }
+
   public async setDiscoverySplash (path: string): Promise<void> {
     if (!this.features.includes('DISCOVERABLE')) {
       const logger = Application.getLogger()
@@ -260,8 +343,19 @@ export default class Guild {
     })
 
     if (result) {
-      this.splash = result.splash
+      this.discoverySplash = result.splash
     }
+  }
+
+  public getBanner (): string | null {
+    const environment = Application.getEnvironment()
+
+    if (environment.get('DEBUG') && !this.features.includes('DISCOVERABLE')) {
+      const logger = Application.getLogger()
+      logger.warn('You do not have permission to upload a banner')
+    }
+
+    return this.banner
   }
 
   public async setBanner (path: string): Promise<void> {
@@ -283,10 +377,12 @@ export default class Guild {
     }
   }
 
+  public getSystemChannel (): TextChannel | undefined {
+    return this.channels.getCache().get(this.systemChannelId)
+  }
+
   public async setSystemChannel (channel: TextChannel | Snowflake): Promise<void> {
-    const value = channel instanceof TextChannel
-      ? channel.id
-      :channel
+    const value = channel instanceof TextChannel ? channel.getId() :channel
 
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, {
@@ -296,6 +392,10 @@ export default class Guild {
     if (result) {
       this.systemChannelId = result
     }
+  }
+
+  public getSystemChannelFlag (): keyof typeof SystemChannelFlag {
+    return keyFromEnum(SystemChannelFlag, this.systemChannelFlags)
   }
 
   public async setSystemChannelFlag (flag: keyof typeof SystemChannelFlag): Promise<void> {
@@ -311,10 +411,12 @@ export default class Guild {
     }
   }
 
+  public getRuleChannel (): TextChannel | undefined {
+    return this.channels.getCache().get(this.ruleChannelId)
+  }
+
   public async setRuleChannel (channel: TextChannel | Snowflake): Promise<void> {
-    const value = channel instanceof TextChannel
-      ? channel.id
-      : channel
+    const value = channel instanceof TextChannel ? channel.getId() : channel
 
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, {
@@ -327,9 +429,7 @@ export default class Guild {
   }
 
   public async setPublicUpdateChannel (channel: TextChannel | Snowflake): Promise<void> {
-    const value = channel instanceof TextChannel
-      ? channel.id
-      : channel
+    const value = channel instanceof TextChannel ? channel.getId() : channel
 
     const request = Application.createRequest()
     const result = await request.patch(`/guilds/${this.id}`, {
@@ -339,6 +439,10 @@ export default class Guild {
     if (result) {
       this.publicUpdateChannelId = value
     }
+  }
+
+  public getDescription (): string | undefined {
+    return this.description
   }
 
   public async setDescription (value: string): Promise<void> {
@@ -383,16 +487,27 @@ export default class Guild {
 
     await Promise.all(
       commands.map(async (command: MineralCommand & { data: CommandContext, id: string, guild: Guild }) => {
-        const payload = await request.post(`/applications/${assembler.application.client.application.id}/guilds/${this.id}/commands`, {
+        const payload = await request.post(`/applications/${assembler.application.client.getApplication().id}/guilds/${this.id}/commands`, {
           ...serializeCommand(command.data)
         })
 
         command.id = payload.id
         command.guild = this
 
-        // @ts-ignore
-        this.commands.set(command.id!, command)
+        this.commands.set(command.id!, command as unknown as Command)
       })
     )
+  }
+
+  public getVanityUrlCode (): string | null {
+    return this.vanityUrlCode
+  }
+
+  public getActivities (): any[] {
+    return this.embeddedActivities
+  }
+
+  public getInvites (): InviteManager {
+    return this.invites
   }
 }
