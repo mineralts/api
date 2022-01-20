@@ -4,14 +4,18 @@ import Role from '../roles'
 import Guild from './Guild'
 
 export default class GuildRoleManager {
-  public cache: Collection<Snowflake, Role> = new Collection()
+  private cache: Collection<Snowflake, Role> = new Collection()
 
   constructor (private guild: Guild) {
   }
 
+  public getCache (): Collection<Snowflake, Role> {
+    return this.cache
+  }
+
   public register (roles: Collection<Snowflake, Role>) {
     roles.forEach((role: Role) => {
-      this.cache.set(role.id, role)
+      this.cache.set(role.getId(), role)
     })
     return this
   }
