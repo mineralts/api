@@ -36,6 +36,7 @@ import MessageEmbed from '../entities/embed/MessageEmbed'
 import EmbedRow from '../entities/embed/EmbedRow'
 import MessageAttachment from '../entities/message/MessageAttachment'
 import Color from '../entities/colors'
+import Emoji from '../entities/emoji'
 
 export type Snowflake = string
 export type Milliseconds = number
@@ -411,7 +412,7 @@ export interface MessageOption {
   tts?: boolean
   components?: EmbedRow[]
   attachment?: MessageAttachment
-  isClientSide?: boolean
+  private?: boolean
 }
 
 export type RoleOption = {
@@ -482,4 +483,21 @@ export type ChoiceOption = BaseOption & {
 export type ChannelOption = BaseOption & {
   channelType: (keyof ChannelOptions)[]
   autocomplete?: boolean
+}
+
+export type MenuSelectOption = {
+  label: string
+  value: unknown
+  description?: string
+  emoji?: string | Emoji
+  default?: boolean
+}
+
+export type MenuSelect = {
+  customId: string
+  placeholder?: string
+  minValues?: number
+  maxValues?: number
+  disabled?: boolean
+  choices: MenuSelectOption[]
 }
