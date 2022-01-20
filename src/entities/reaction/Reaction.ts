@@ -4,8 +4,16 @@ import Client from '../client'
 
 export default class Reaction {
   constructor (
-    public emoji: Emoji,
-    public member: GuildMember | Client
+    private emoji: Emoji,
+    private member: GuildMember | Client
   ) {
+  }
+
+  public getEmoji (): Emoji {
+    return this.emoji
+  }
+
+  public getMember (): GuildMember | Client {
+    return this.member
   }
 }
