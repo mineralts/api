@@ -3,5 +3,9 @@ import { Snowflake } from '../../types'
 import Guild from '../guild/Guild'
 
 export default class Index {
-  public cache: Collection<Snowflake, Guild> = new Collection()
+  protected cache: Collection<Snowflake, Guild> = new Collection()
+
+  public getCache (): Collection<Snowflake, Guild> {
+    return this.cache
+  }
 }
