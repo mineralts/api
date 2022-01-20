@@ -35,6 +35,10 @@ export default class TextChannelResolvable extends Channel {
     super(id, type, name, guildId, guild, parentId, position, parent)
   }
 
+  public getCooldown (): DateTime {
+    return this.cooldown
+  }
+
   public async setCooldown (value: Milliseconds) {
     if (value < 0 || value > 21600) {
       const logger = Application.getLogger()
@@ -42,21 +46,29 @@ export default class TextChannelResolvable extends Channel {
     }
 
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.id}`, { rate_limit_per_user: value })
+    await request.patch(`/channels/${this.getId()}`, { rate_limit_per_user: value })
 
     this.cooldown = DateTime.fromMillis(value)
   }
 
+  public getDescription (): string | undefined {
+    return this.description
+  }
+
   public async setDescription (value: string | null) {
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.id}`, { topic: value })
+    await request.patch(`/channels/${this.getId()}`, { topic: value })
 
     this.description = value || ''
   }
 
+  public isNSFW (): boolean {
+    return this.isNsfw
+  }
+
   public async setNSFW(bool: boolean) {
     const request = Application.createRequest()
-    await request.patch(`/channels/${this.id}`, { nsfw: bool })
+    await request.patch(`/channels/${this.getId()}`, { nsfw: bool })
 
     this.isNsfw = bool
   }
@@ -77,7 +89,7 @@ export default class TextChannelResolvable extends Channel {
       process.exit(1)
     }
 
-    const payload = await request.post(`/channels/${this.id}/messages`, {
+    const payload = await request.post(`/channels/${this.getId()}/messages`, {
       ...messageOption,
       components
     })
@@ -85,7 +97,7 @@ export default class TextChannelResolvable extends Channel {
     const messageBuilder = new MessageBuilder(Application.getClient())
     return messageBuilder.build({
       ...payload,
-      guild_id: this.guild!.id,
+      guild_id: this.getGuild()!.getId(),
     })
   }
 }
