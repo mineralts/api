@@ -3,13 +3,13 @@ import Application from '@mineralts/application'
 import { parseEmoji } from '../../utils'
 
 export default class SelectMenu {
-  private type: ComponentType = ComponentType.SELECT_MENU
-  private customId: string | undefined
-  private minValues = 1
-  private maxValues = 1
-  private placeholder?: string
-  private disabled = false
-  private readonly choices: MenuSelectOption[] = []
+  public type: ComponentType = ComponentType.SELECT_MENU
+  public customId: string | undefined
+  public minValues = 1
+  public maxValues = 1
+  public placeholder?: string
+  public disabled = false
+  public readonly choices: MenuSelectOption[] = []
 
   constructor (options?: MenuSelect) {
     if (options) {
@@ -22,17 +22,9 @@ export default class SelectMenu {
     }
   }
 
-  public getCustomId (): string | undefined {
-    return this.customId
-  }
-
   public setCustomId (identifier: string) {
     this.customId = identifier
     return this
-  }
-
-  public getMinValue (): number| undefined {
-    return this.minValues
   }
 
   public setMinimalValue (value: number) {
@@ -40,17 +32,9 @@ export default class SelectMenu {
     return this
   }
 
-  public getMaxValue (): number| undefined {
-    return this.maxValues
-  }
-
   public setMaximalValue (value: number) {
     this.maxValues = value
     return this
-  }
-
-  public getPlaceholder (): string | undefined {
-    return this.placeholder
   }
 
   public setPlaceholder (value: string) {
@@ -65,10 +49,6 @@ export default class SelectMenu {
   public setDisabled (value: boolean) {
     this.disabled = value
     return this
-  }
-
-  public getOptions (): { label: string, value: unknown, description?: string, emoji?: any, default?: boolean }[] {
-    return this.choices
   }
 
   public addOption (option: { label: string, value: unknown, description?: string, emoji?: any, default?: boolean }) {

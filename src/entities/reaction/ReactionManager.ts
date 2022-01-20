@@ -7,30 +7,24 @@ import Reaction from './Reaction'
 import Collection from '../../utils/Collection'
 
 export default class ReactionManager {
-  private cache: Collection<Snowflake, Reaction[]> = new Collection()
+  public cache: Collection<Snowflake, Reaction[]> = new Collection()
 
   constructor (private message: Message) {
   }
 
-  public getCache (): Collection<Snowflake, Reaction[]> {
-    return this.cache
-  }
-
   public addReaction(emoji: Emoji, member: GuildMember | Client) {
-    const userReactions = this.cache.get(member.getUser().getId())
+    const userReactions = this.cache.get(member.user.id)
     const reaction = new Reaction(emoji, member)
 
     if (!userReactions) {
-      this.cache.set(member.getUser().getId(), [reaction])
+      this.cache.set(member.user.id, [reaction])
       return
     }
     userReactions.push(reaction)
   }
 
   public async remove (member: Snowflake | GuildMember | Client) {
-    const snowflake = member instanceof GuildMember || member instanceof Client
-      ? member.getUser().getId()
-      : member
+    const snowflake = member instanceof GuildMember || member instanceof Client ? member.user.id : member
 
     const memberReactions = this.cache.get(snowflake)
     // if (memberReactions?.length) {

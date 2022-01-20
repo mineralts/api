@@ -3,8 +3,4 @@ import Invite from './Invite'
 
 export default class InviteManager {
   public cache: Collection<string, Invite> = new Collection()
-
-  public getCache (): Collection<string, Invite> {
-    return this.cache
-  }
 }

@@ -5,27 +5,15 @@ import Application from '@mineralts/application'
 
 export default class Channel {
   constructor (
-    private id: Snowflake,
-    private type: keyof typeof ChannelTypeResolvable,
-    private name: string,
-    private guildId: Snowflake,
-    private guild: Guild | undefined,
-    private parentId: Snowflake | undefined,
-    private position: number,
-    private parent?: CategoryChannel,
+    public id: Snowflake,
+    public type: keyof typeof ChannelTypeResolvable,
+    public name: string,
+    public guildId: Snowflake,
+    public guild: Guild | undefined,
+    public parentId: Snowflake | undefined,
+    public position: number,
+    public parent?: CategoryChannel,
   ) {
-  }
-
-  public getId (): Snowflake {
-    return this.id
-  }
-
-  public getType (): keyof typeof ChannelTypeResolvable {
-    return this.type
-  }
-
-  public getGuild (): Guild | undefined {
-    return this.guild
   }
 
   public isText () {
@@ -49,10 +37,6 @@ export default class Channel {
     return ChannelTypeResolvable[this.type] === ChannelTypeResolvable.GUILD_STAGE_VOICE
   }
 
-  public getParent (): CategoryChannel | undefined {
-    return this.parent
-  }
-
   public async setParent (category: CategoryChannel | Snowflake) {
     const request = Application.createRequest()
     const parentId = typeof category === 'string'
@@ -67,10 +51,6 @@ export default class Channel {
     this.parent = this.guild?.channels.cache.get(parentId)
   }
 
-  public getName (): string {
-    return this.name
-  }
-
   public async setName (value: string) {
     const request = Application.createRequest()
     await request.patch(`/channels/${this.id}`, {
@@ -78,10 +58,6 @@ export default class Channel {
     })
 
     this.name = value
-  }
-
-  public getPosition (): number {
-    return this.position
   }
 
   public async setPosition (position: number) {

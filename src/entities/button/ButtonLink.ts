@@ -4,7 +4,7 @@ import Application from '@mineralts/application'
 import { ButtonStyle } from '../../types'
 
 export default class ButtonLink extends BaseButton {
-  public url?: string
+  private url?: string
   private style: keyof typeof ButtonStyle = 'LINK'
 
   constructor (
@@ -27,14 +27,6 @@ export default class ButtonLink extends BaseButton {
     }
   }
 
-  public getStyle (): keyof typeof ButtonStyle {
-    return this.style
-  }
-
-  public getUrl (): string | undefined {
-    return this.url
-  }
-
   public setUrl (url: string) {
     this.url = url
     return this
@@ -43,13 +35,13 @@ export default class ButtonLink extends BaseButton {
   public toJson () {
     if (!this.url) {
       const logger = Application.getLogger()
-      logger.error(`${this.getLabel()} component has not url.`)
+      logger.error(`${this.label} component has not url.`)
       process.exit(0)
     }
 
     return {
       ...super.toJson(),
-      style: ButtonStyle[this.getStyle()],
+      style: ButtonStyle[this.style],
       url: this.url
     }
   }

@@ -16,14 +16,13 @@ export default class CommandOptions {
   }
 
   public getChannel (name: string): ChannelResolvable | undefined {
-    console.log(this.params)
     const channel = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: Snowflake }
-    return this.member.getGuild().getChannels().getCache().get(channel?.value)
+    return this.member.guild.channels.cache.get(channel?.value)
   }
 
   public getMember (name: string): GuildMember | undefined {
     const channel = this.params.options?.find((param: CommandParamsResolvable) => param.name == name) as unknown as { value: Snowflake }
-    return this.member.getGuild().getChannels().getCache().get(channel?.value)
+    return this.member.guild.channels.cache.get(channel?.value)
   }
 
   public getString (name: string): string | undefined {

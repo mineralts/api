@@ -2,18 +2,10 @@ import { DateTime } from 'luxon'
 
 export default class RateLimit {
   constructor (
-    private message: string,
-    private retryAfter: DateTime,
+    public message: string,
+    public retryAfter: DateTime,
     private global: boolean,
   ) {
-  }
-
-  public getMessage (): string {
-    return this.message
-  }
-
-  public getTimeout (): DateTime {
-    return this.retryAfter
   }
 
   public isGlobal (): boolean {

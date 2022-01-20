@@ -4,13 +4,9 @@ import Guild from './Guild'
 import Application from '@mineralts/application'
 
 export default class GuildChannelManager {
-  private cache: Collection<Snowflake, ChannelResolvable> = new Collection()
+  public cache: Collection<Snowflake, ChannelResolvable> = new Collection()
 
   constructor (private guild?: Guild) {
-  }
-
-  public getCache (): Collection<Snowflake, ChannelResolvable>  {
-    return this.cache
   }
 
   public register (channels: Collection<Snowflake, ChannelResolvable>) {
@@ -25,11 +21,11 @@ export default class GuildChannelManager {
       name: channel.name,
       type: ChannelTypeResolvable[channel.type],
       permission_overwrites: channel.permissionOverwrites || [],
-      parent_id: channel.options?.parent?.getId() || channel.options?.parentId
+      parent_id: channel.options?.parent?.id || channel.options?.parentId
     }
 
     if (channel.type === 'GUILD_TEXT') {
-      payload = await request.post(`/guilds/${this.guild?.getId()}/channels`, {
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
         ...baseChannel,
         nsfw: channel.options?.nsfw || false,
         rate_limit_per_user: channel.options?.cooldown || 0,
@@ -38,7 +34,7 @@ export default class GuildChannelManager {
     }
 
     if (channel.type === 'GUILD_VOICE') {
-      payload = await request.post(`/guilds/${this.guild?.getId()}/channels`, {
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
         ...baseChannel,
         user_limit: channel.options?.userLimit || 0,
         bitrate: channel.options?.bitrate || 64000
@@ -46,13 +42,13 @@ export default class GuildChannelManager {
     }
 
     if (channel.type === 'GUILD_CATEGORY') {
-      payload = await request.post(`/guilds/${this.guild?.getId()}/channels`, {
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
         ...baseChannel
       })
     }
 
     if (channel.type === 'GUILD_STAGE_VOICE') {
-      payload = await request.post(`/guilds/${this.guild?.getId()}/channels`, {
+      payload = await request.post(`/guilds/${this.guild?.id}/channels`, {
         ...baseChannel,
         user_limit: channel.options?.userLimit || 0,
         bitrate: channel.options?.bitrate || 64000

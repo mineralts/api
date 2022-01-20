@@ -5,8 +5,8 @@ import BaseButton from './BaseButton'
 import Application from '@mineralts/application'
 
 export default class Button extends BaseButton {
-  private customId?: Snowflake
-  private style: Exclude<keyof typeof ButtonStyle, 'LINK'>
+  public customId?: Snowflake
+  public style: Exclude<keyof typeof ButtonStyle, 'LINK'>
 
   constructor (
     props?: {
@@ -36,14 +36,6 @@ export default class Button extends BaseButton {
     }
   }
 
-  public getCustomId (): Snowflake | undefined {
-    return this.customId
-  }
-
-  public getStyle (): Exclude<keyof typeof ButtonStyle, 'LINK'> {
-    return this.style
-  }
-
   public setStyle (style: Exclude<keyof typeof ButtonStyle, 'LINK'>) {
     this.style = style
     return this
@@ -57,14 +49,14 @@ export default class Button extends BaseButton {
   public toJson () {
     if (!this.customId) {
       const logger = Application.getLogger()
-      logger.error(`${this.getLabel()} component has not customId.`)
+      logger.error(`${this.label} component has not customId.`)
       process.exit(0)
     }
 
     return {
       ...super.toJson(),
-      style: ButtonStyle[this.getStyle()],
-      custom_id: this.getCustomId()
+      style: ButtonStyle[this.style],
+      custom_id: this.customId
     }
   }
 }

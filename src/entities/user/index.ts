@@ -5,44 +5,24 @@ import Presence from '../presence'
 
 export default class User {
   constructor (
-    private id: Snowflake,
-    private username: string,
-    private discriminator: string,
-    private tag: string,
-    private bot: boolean,
-    private premiumSince: DateTime | undefined,
-    private verified: boolean,
-    private mfaEnabled: boolean,
-    private flags: number,
-    private email: string | null,
-    private avatar: string | null,
-    private banner: string | null,
-    private presence: Presence | undefined,
+    public id: Snowflake,
+    public username: string,
+    public discriminator: string,
+    public tag: string,
+    public bot: boolean,
+    public premiumSince: DateTime | undefined,
+    public verified: boolean,
+    public mfaEnabled: boolean,
+    public flags: number,
+    public email: string | null,
+    public avatar: string | null,
+    public banner: string | null,
+    public presence: Presence | undefined,
   ) {
-  }
-
-  public getId (): Snowflake {
-    return this.id
-  }
-
-  public getUsername (): string {
-    return this.username
-  }
-
-  public getDiscriminator (): string {
-    return this.discriminator
-  }
-
-  public getTag (): string {
-    return this.tag
   }
 
   public isBot (): boolean {
     return this.bot
-  }
-
-  public getPremiumSince (): DateTime | undefined {
-    return this.premiumSince
   }
 
   public isVerified (): boolean {
@@ -51,18 +31,6 @@ export default class User {
 
   public hasMfaEnabled (): boolean {
     return this.mfaEnabled
-  }
-
-  public getFlags (): number {
-    return this.flags
-  }
-
-  public getEmail (): string | null {
-    return this.email
-  }
-
-  public getAvatar (): string | null {
-    return this.avatar
   }
 
   public getAvatarUrl (format = 'webp', size?, dynamic = false): string | null {
@@ -76,19 +44,11 @@ export default class User {
     return `${Application.cdn}/embed/avatars/${this.discriminator}.png`
   }
 
-  public getBanner (): string | null {
-    return this.banner
-  }
-
   public async getBannerUrl (format = 'webp', size?, dynamic = false): Promise<string | null> {
     if (dynamic) format = this.avatar?.startsWith('a_') ? 'gif' : format
     return this.avatar
       ? this.makeImageUrl(`${Application.cdn}/banners/${this.id}/${this.banner}`, { format, size })
       : null
-  }
-
-  public getPresence (): Presence | undefined {
-    return this.presence
   }
 
   protected makeImageUrl (root, { format = 'webp', size = 256 }: { format?: any; size?: any } = {}) {

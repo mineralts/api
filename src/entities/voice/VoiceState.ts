@@ -6,24 +6,16 @@ import Application from '@mineralts/application'
 
 export default class VoiceState {
   constructor (
-    private member: GuildMember,
-    private sessionId: string,
-    private suppress: boolean,
-    private video: boolean,
-    private mute: boolean,
-    private deaf: boolean,
-    private channelId: Snowflake,
-    private channel: VoiceChannel | undefined,
-    private guild: Guild,
+    public member: GuildMember,
+    public sessionId: string,
+    public suppress: boolean,
+    public video: boolean,
+    public mute: boolean,
+    public deaf: boolean,
+    public channelId: Snowflake,
+    public channel: VoiceChannel | undefined,
+    public guild: Guild,
   ) {
-  }
-
-  public getMember (): GuildMember {
-    return this.member
-  }
-
-  public getSessionId (): string {
-    return this.sessionId
   }
 
   public isSuppress (): boolean {
@@ -42,17 +34,9 @@ export default class VoiceState {
     return this.deaf
   }
 
-  public getChannel (): VoiceChannel | undefined {
-    return this.channel
-  }
-
-  public getGuild (): Guild {
-    return this.guild
-  }
-
   public async setMute(value: boolean) {
     const request = Application.createRequest()
-    await request.patch(`/guilds/${this.guild.getId()}/members/${this.member.getId()}`, {
+    await request.patch(`/guilds/${this.guild.id}/members/${this.member.id}`, {
       mute: value
     })
 
@@ -61,7 +45,7 @@ export default class VoiceState {
 
   public async setDeaf(value: boolean) {
     const request = Application.createRequest()
-    await request.patch(`/guilds/${this.guild.getId()}/members/${this.member.getId()}`, {
+    await request.patch(`/guilds/${this.guild.id}/members/${this.member.id}`, {
       deaf: value
     })
 
@@ -70,14 +54,14 @@ export default class VoiceState {
 
   public async move(channel: VoiceChannel | Snowflake) {
     const request = Application.createRequest()
-    await request.patch(`/guilds/${this.guild.getId()}/members/${this.member.getId()}`, {
+    await request.patch(`/guilds/${this.guild.id}/members/${this.member.id}`, {
       channel_id: typeof channel === 'string'
         ? channel
-        : channel.getId()
+        : channel.id
     })
 
     this.channel = typeof channel === 'string' ?
-      this.guild.getChannels().getCache().get(channel)
+      this.guild.channels.cache.get(channel)
       : channel
   }
 }

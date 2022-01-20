@@ -15,7 +15,7 @@ export default class ButtonInteraction extends Interaction {
     member: GuildMember,
     public component: Button | undefined,
   ) {
-    super(id, version, 'MESSAGE_COMPONENT', token, component?.getCustomId(), 'BUTTON', message, member)
+    super(id, version, 'MESSAGE_COMPONENT', token, component?.customId, 'BUTTON', message, member)
   }
 
   public async pass () {
@@ -42,7 +42,7 @@ export default class ButtonInteraction extends Interaction {
       data: {
         ...messageOption,
         components,
-        flags: messageOption.isClientSide ? 1 << 6 : undefined,
+        flags: messageOption.private ? 1 << 6 : undefined,
       }
     })
   }

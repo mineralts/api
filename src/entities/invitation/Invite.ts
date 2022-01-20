@@ -4,46 +4,14 @@ import { ChannelResolvable } from '../../types'
 
 export default class Invite {
   constructor (
-    private owner: GuildMember,
-    private channel: ChannelResolvable,
-    private code: string,
-    private count: number,
-    private max: number,
-    private temporary: boolean,
-    private expireAt: DateTime,
-    private createdAt: DateTime,
+    public owner: GuildMember,
+    public channel: ChannelResolvable,
+    public code: string,
+    public count: number,
+    public max: number,
+    public temporary: boolean,
+    public expireAt: DateTime,
+    public createdAt: DateTime,
   ) {
-  }
-
-  public getOwner (): GuildMember {
-    return this.owner
-  }
-
-  public getChannel (): ChannelResolvable {
-    return this.channel
-  }
-
-  public getCode (): string {
-    return this.code
-  }
-
-  public getUses (): number {
-    return this.count
-  }
-
-  public getMaxUses (): number {
-    return this.max
-  }
-
-  public isTemporary (): boolean {
-    return this.temporary
-  }
-
-  public getCreatedAt (): DateTime {
-    return this.createdAt
-  }
-
-  public getExpiredAt (): DateTime {
-    return this.expireAt
   }
 }

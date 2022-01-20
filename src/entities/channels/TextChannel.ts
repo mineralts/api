@@ -24,6 +24,6 @@ export default class TextChannel extends TextChannelResolvable {
     parent?: CategoryChannel,
   ) {
     super(id, 'GUILD_TEXT', name, description, guildId, guild, lastMessageId, lastMessage, parentId, permissionOverwrites, position, cooldown, messages, isNsfw, parent)
-    this.messages = new MessageManager(this)
+    this.createMessageManager(new MessageManager(this))
   }
 }

@@ -14,43 +14,15 @@ export default class Client {
   public guilds: GuildManager = new GuildManager()
 
   constructor (
-    private container: any,
-    private token: string,
-    private options: ClientOptions,
-    private user: User,
-    private sessionId: string,
-    private presences: Presence[],
-    private application: { id: string, flags: number },
-    private commands: Collection<Snowflake, Command> = new Collection(),
+    public container: any,
+    public token: string,
+    public options: ClientOptions,
+    public user: User,
+    public sessionId: string,
+    public presences: Presence[],
+    public application: { id: string, flags: number },
+    public commands: Collection<Snowflake, Command> = new Collection(),
   ) {
-  }
-
-  public getOptions (): ClientOptions {
-    return this.options
-  }
-
-  public getToken (): string {
-    return this.token
-  }
-
-  public getUser (): User {
-    return this.user
-  }
-
-  public getSessionId (): string {
-    return this.sessionId
-  }
-
-  public getPresences (): Presence[] {
-    return this.presences
-  }
-
-  public getApplication (): { id: string, flags: number } {
-    return this.application
-  }
-
-  public getCommands (): Collection<Snowflake, Command> {
-    return this.commands
   }
   
   public async registerGlobalCommands (assembler: Assembler) {

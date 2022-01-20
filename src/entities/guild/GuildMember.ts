@@ -9,71 +9,33 @@ import Application from '@mineralts/application'
 
 export default class GuildMember {
   constructor (
-    private id: Snowflake,
-    private username: string,
-    private user: User,
-    private guild: Guild,
-    private roles: GuildMemberRoleManager,
-    private highestRole: Role | null,
-    private pending: boolean,
-    private voice: VoiceState,
-    private communicationTimeout: DateTime | null,
-    private joinedAt: DateTime,
+    public id: Snowflake,
+    public username: string,
+    public user: User,
+    public guild: Guild,
+    public roles: GuildMemberRoleManager,
+    public highestRole: Role | null,
+    public pending: boolean,
+    public voice: VoiceState,
+    public communicationTimeout: DateTime | null,
+    public joinedAt: DateTime,
   ) {
-  }
-
-  public getId (): Snowflake {
-    return this.id
-  }
-
-  public getUsername (): string {
-    return this.username
-  }
-
-  public getUser (): User {
-    return this.user
-  }
-
-  public getGuild (): Guild {
-    return this.guild
-  }
-
-  public getRoles (): GuildMemberRoleManager {
-    return this.roles
-  }
-
-  public getHighestRole (): Role | null {
-    return this.highestRole
   }
 
   public isPending (): boolean {
     return this.pending
   }
 
-  public getVoice (): VoiceState {
-    return this.voice
-  }
-
-  public getCommunicationTimeout (): DateTime | null {
-    return this.communicationTimeout
-  }
-
-  public getJoinedAt (): DateTime {
-    return this.joinedAt
-  }
-
   public async setUsername (value: string) {
     const request = Application.createRequest()
-    const guildId = this.getGuild().getId()
 
-    await request.patch(`/guilds/${guildId}/members/${this.id}`, {
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, {
       nick: value
     })
   }
 
   public async exclude (date: DateTime, reason?: string) {
     const request = Application.createRequest()
-    const guildId = this.getGuild().getId()
 
     if (reason) {
       request.defineHeaders({
@@ -81,7 +43,7 @@ export default class GuildMember {
       })
     }
 
-    await request.patch(`/guilds/${guildId}/members/${this.id}`, {
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, {
       communication_disabled_until: date
     })
 
@@ -90,7 +52,6 @@ export default class GuildMember {
 
   public async sorry (reason?: string) {
     const request = Application.createRequest()
-    const guildId = this.getGuild().getId()
 
     if (reason) {
       request.defineHeaders({
@@ -98,7 +59,7 @@ export default class GuildMember {
       })
     }
 
-    await request.patch(`/guilds/${guildId}/members/${this.id}`, {
+    await request.patch(`/guilds/${this.guild.id}/members/${this.id}`, {
       communication_disabled_until: null
     })
 
@@ -107,7 +68,6 @@ export default class GuildMember {
   
   public async ban (options: { messageCount?: number, reason?: string }) {
     const request = Application.createRequest()
-    const guildId = this.getGuild().getId()
 
     if (options.messageCount && (options.messageCount < 0 || options.messageCount > 50)) {
       const logger = Application.getLogger()
@@ -121,7 +81,7 @@ export default class GuildMember {
       })
     }
 
-    await request.patch(`/guilds/${guildId}/bans/${this.id}`, {
+    await request.patch(`/guilds/${this.guild.id}/bans/${this.id}`, {
       delete_message_days: options.messageCount,
       reason: options.reason
     })
@@ -131,7 +91,6 @@ export default class GuildMember {
 
   public async unban (reason?: string) {
     const request = Application.createRequest()
-    const guildId = this.getGuild().getId()
 
     if (reason) {
       request.defineHeaders({
@@ -139,13 +98,12 @@ export default class GuildMember {
       })
     }
 
-    await request.delete(`/guilds/${guildId}/bans/${this.id}`)
+    await request.delete(`/guilds/${this.guild.id}/bans/${this.id}`)
     request.resetHeaders('X-Audit-Log-Reason')
   }
 
   public async kick (reason?: string) {
     const request = Application.createRequest()
-    const guildId = this.getGuild().getId()
 
     if (reason) {
       request.defineHeaders({
@@ -153,7 +111,7 @@ export default class GuildMember {
       })
     }
 
-    await request.delete(`/guilds/${guildId}/members/${this.id}`)
+    await request.delete(`/guilds/${this.guild.id}/members/${this.id}`)
     request.resetHeaders('X-Audit-Log-Reason')
   }
 }

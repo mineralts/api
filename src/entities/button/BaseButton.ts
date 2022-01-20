@@ -3,23 +3,15 @@ import { parseEmoji } from '../../utils'
 
 export default class BaseButton {
   constructor (
-    private label?: string,
-    private emoji?: string | Emoji,
-    private disabled: boolean = false,
+    public label?: string,
+    public emoji?: string | Emoji,
+    public disabled: boolean = false,
   ) {
-  }
-
-  public getLabel (): string | undefined {
-    return this.label
   }
 
   public setLabel (value: string) {
     this.label = value
     return this
-  }
-
-  public getEmoji (): string | Emoji | undefined {
-    return this.label
   }
 
   public setEmoji (emoji: string | Emoji) {
@@ -44,9 +36,9 @@ export default class BaseButton {
 
   protected toJson () {
     return {
-      label: this.getLabel(),
-      emoji: this.getEmoji(),
-      disabled: this.isDisabled(),
+      label: this.label,
+      emoji: this.emoji,
+      disabled: this.disabled,
     }
   }
 }

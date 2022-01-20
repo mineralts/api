@@ -6,13 +6,9 @@ import Application from '@mineralts/application'
 import { MessageBuilder } from '@mineralts/core'
 
 export default class MessageManager {
-  private cache: Collection<Snowflake, Message> = new Collection()
+  public cache: Collection<Snowflake, Message> = new Collection()
 
   constructor (private channel?: TextChannel) {
-  }
-
-  public getCache () {
-    return this.cache
   }
 
   public async fetch (id: Snowflake): Promise<Message>
@@ -21,7 +17,7 @@ export default class MessageManager {
     const request = Application.createRequest()
 
     if (typeof value === 'string') {
-      const payload = await request.get(`/channels/${this.channel?.getId()}/messages/${value}`)
+      const payload = await request.get(`/channels/${this.channel?.id}/messages/${value}`)
       return this.instantiate(payload)
     }
 
@@ -39,7 +35,7 @@ export default class MessageManager {
       })
     }
 
-    const payload = await request.get(`/channels/${this.channel?.getId()}/messages?${query}`)
+    const payload = await request.get(`/channels/${this.channel?.id}/messages?${query}`)
     payload.forEach((item) => this.instantiate(item))
   }
 
@@ -47,10 +43,10 @@ export default class MessageManager {
     const messageBuilder = new MessageBuilder(Application.getClient())
     const message = messageBuilder.build({
       ...payload,
-      guild_id: this.channel!.getGuild()!.getId()
+      guild_id: this.channel!.guild!.id
     })
 
-    this.cache.set(message.getId(), message)
+    this.cache.set(message.id, message)
     return message
   }
 }

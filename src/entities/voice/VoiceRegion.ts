@@ -1,19 +1,11 @@
 export default class VoiceRegion {
   constructor (
-    private id: string,
-    private name: string,
-    private optimal: boolean,
-    private custom: boolean,
-    private deprecated: boolean,
+    public id: string,
+    public name: string,
+    public optimal: boolean,
+    public custom: boolean,
+    public deprecated: boolean,
   ) {
-  }
-
-  public getId (): string {
-    return this.id
-  }
-
-  public getName (): string {
-    return this.name
   }
 
   public isOptimal (): boolean {
